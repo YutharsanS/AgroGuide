@@ -1,6 +1,13 @@
-POST http://localhost:8080/chat/sendMessage
+### Test the /chatbot endpoint
+POST http://localhost:8080/chatbot
 Content-Type: application/json
 
 {
-    "userMessage": "Hello, how are you?"
+  "message": "Hello, chatbot!"
 }
+
+### Test the /getContent endpoint
+POST http://localhost:8080/chatbot/getContent
+Content-Type: application/json
+
+{}
