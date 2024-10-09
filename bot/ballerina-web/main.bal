@@ -1,20 +1,20 @@
 import ballerina/http;
 import ballerina/io;
-import ballerinax/mysql;
-import ballerina/sql;
-import ballerinax/mysql.driver as _;
+// import ballerinax/mysql;
+// import ballerina/sql;
+// import ballerinax/mysql.driver as _;
 
-type databaseConfig record {|
-    string host;
-    string user;
-    string password;
-    string database;
-    int port;
-|};
+// type databaseConfig record {|
+//     string host;
+//     string user;
+//     string password;
+//     string database;
+//     int port;
+// |};
 
-configurable databaseConfig connection = ?;
+// configurable databaseConfig connection = ?;
 
-mysql:Client pool = check new (...connection);
+// mysql:Client pool = check new (...connection);
 
 //core configure
 @http:ServiceConfig {
@@ -45,29 +45,29 @@ service /chatbot on new http:Listener(8080) {
    
     }
     // Resource function to handle POST requests to the /getContent endpoint
-    resource function post getContent(http:Caller caller, http:Request req) returns error? {
-        json _ = check req.getJsonPayload();
+//     resource function post getContent(http:Caller caller, http:Request req) returns error? {
+//         json _ = check req.getJsonPayload();
 
-        // Execute the SQL query
-        // stream<record {|anydata...;|}, sql:Error?> resultStream = pool->query(`SELECT * FROM content`);
-        // json[] resultJson = [];
+//         // Execute the SQL query
+//         // stream<record {|anydata...;|}, sql:Error?> resultStream = pool->query(`SELECT * FROM content`);
+//         // json[] resultJson = [];
 
-        // // Process the result stream and build the JSON response
-        // check resultStream.forEach(function(record {|anydata...;|} row) {
-        //     map<json> rowJson = {};
-        //     foreach var [key, value] in row.entries() {
-        //         rowJson[key] = <json>value;
-        //     }
-        //     resultJson.push(rowJson);
-        // });
-        json resultJson = check  getContent();
+//         // // Process the result stream and build the JSON response
+//         // check resultStream.forEach(function(record {|anydata...;|} row) {
+//         //     map<json> rowJson = {};
+//         //     foreach var [key, value] in row.entries() {
+//         //         rowJson[key] = <json>value;
+//         //     }
+//         //     resultJson.push(rowJson);
+//         // });
+//         json resultJson = check  getContent();
 
-        // Send the result back to the client
-        check caller->respond(resultJson);
-    }
-
-    
+//         // Send the result back to the client
+//         check caller->respond(resultJson);
+//     }
 }
+    
+// }
 
 // Function to call the Python chatbot
 
@@ -110,23 +110,23 @@ function callPythonChatbot(string message) returns json|error {
 }
 
 // get content from database
-function getContent() returns json|error {
+// function getContent() returns json|error {
 
-    // Execute the SQL query
-        stream<record {|anydata...;|}, sql:Error?> resultStream = pool->query(`SELECT * FROM content`);
-        json[] resultJson = [];
+//     // Execute the SQL query
+//         stream<record {|anydata...;|}, sql:Error?> resultStream = pool->query(`SELECT * FROM content`);
+//         json[] resultJson = [];
 
-        // Process the result stream and build the JSON response
-        check resultStream.forEach(function(record {|anydata...;|} row) {
-            map<json> rowJson = {};
-            foreach var [key, value] in row.entries() {
-                rowJson[key] = <json>value;
-            }
-            resultJson.push(rowJson);
-        });
+//         // Process the result stream and build the JSON response
+//         check resultStream.forEach(function(record {|anydata...;|} row) {
+//             map<json> rowJson = {};
+//             foreach var [key, value] in row.entries() {
+//                 rowJson[key] = <json>value;
+//             }
+//             resultJson.push(rowJson);
+//         });
         
-        return resultJson;
-        }
+//         return resultJson;
+//         }
 
 
 

@@ -8,6 +8,7 @@ import Footer from "./components/Footer"
 import Home from "./pages/Home"
 import Instruction from "./pages/Instruction"
 import Bot from "./pages/Bot"
+import Community from "./pages/Community"
 
 function App() {
   return (
@@ -16,9 +17,10 @@ function App() {
       <BrowserRouter>
       <Header />
       <Routes>
-          <Route path="/bot" element={<Bot />} />
-          <Route path="/instruction" element={<Instruction />} />
           <Route path="/" element={<Home />} />
+          <Route path="/instruction" element={<Instruction />} />
+          <Route path="/bot" element={<Bot />} />
+          <Route path="/community" element={<Community />} />
         </Routes>
         <Footer />
     </BrowserRouter>
