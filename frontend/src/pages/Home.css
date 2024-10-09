@@ -1,0 +1,120 @@
+/* Hero Section */
+
+.Home-page #hero {
+    background-size: cover;
+    background-position: center;
+    padding: 100px 20px;
+    text-align: center;
+    background: linear-gradient(to left, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('../assets/hero-bg.jpg') no-repeat center center;
+}
+
+.Home-page #hero h1 {
+    color: rgb(248, 248, 248);
+}
+.Home-page #hero p {
+    color: azure;
+}
+
+.Home-page #community {
+    background-color: rgb(230, 230, 230); /* Warm beige color */
+}
+
+.Home-page #hero h1 {
+    font-size: 3em;
+    margin-bottom: 20px;
+}
+
+.Home-page #hero p {
+    font-size: 1.5em;
+    margin-bottom: 30px;
+}
+
+.Home-page #hero .btn-secondary {
+    margin-left: 5px;
+}
+
+.Home-page h2 {
+    font-size: 2em;
+}
+
+.Home-page p {
+    font-size: 1.2em;
+}
+
+.Home-page .btn {
+    display: inline-block;
+    padding: 12px 25px;
+    background-color: #28a745;
+    color: white;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    text-align: center;
+}
+
+.Home-page .btn-secondary {
+    background-color: #6c757d;
+}
+
+.Home-page .btn:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+}
+
+.Home-page .btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+/* Section Styles */
+.Home-page section {
+    display: flex;
+    align-items: center;
+    padding: 80px 20px;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.Home-page .left-align .text-content {
+    order: 1;
+    text-align: center;
+}
+
+.Home-page .left-align .image-placeholder {
+    order: 2;
+}
+
+.Home-page .right-align .text-content {
+    order: 2;
+    text-align: center;
+}
+
+.Home-page .right-align .image-placeholder {
+    order: 1;
+}
+
+.Home-page .text-content {
+    flex: 2;
+    padding: 40px;
+}
+
+.Home-page .image-placeholder {
+    flex: 1;
+    height: auto;
+    background-color: transparent;
+    margin: 20px;
+}
+
+.Home-page .image-placeholder img {
+    width: 100%; /* Changed from fixed width to 100% */
+    height: auto; /* Changed from fixed height to auto */
+    max-width: 400px; /* Added max-width to maintain aspect ratio */
+    margin-left: 20px;
+    margin-right: 20px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.8);
+}
+
+.Home-page #hero .image-placeholder img {
+    border-radius: 150px;
+}
+

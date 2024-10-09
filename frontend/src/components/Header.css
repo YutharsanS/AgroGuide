@@ -1,0 +1,117 @@
+/* General Header Styles */
+.header {
+    width: 100%;
+    background-color: white;  /* Changed to white for a clean look */
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* Enhanced shadow for more depth */
+    /* font-family: 'Roboto', sans-serif;  Modern font */
+    border-radius: 0 0 8px 8px;  /* Rounded bottom corners */
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;  /* Adjusted padding for better spacing */
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    width: 40px;  /* Slightly smaller logo */
+    height: 40px;
+    margin-right: 15px;  /* Adjusted margin for better spacing */
+}
+
+.site-title {
+    font-size: 1.6rem;  /* Slightly smaller font size */
+    color:black;
+    font-weight: 500;  /* Medium weight for a cleaner look */
+}
+
+/* Navigation Bar Styles */
+.navbar {
+    display: flex;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;  /* Adjusted gap for better spacing */
+}
+
+.nav-item {
+    position: relative;
+}
+
+.nav-link {
+    text-decoration: none;
+    font-size: 1rem;  /* Slightly smaller font size */
+    color:black;
+    transition: color 0.3s ease, transform 0.3s ease;  /* Added transform transition */
+}
+
+.nav-link:hover {
+    color: #1abc9c;  /* A modern teal color on hover */
+    transform: translateY(-2px);  /* Slight lift effect on hover */
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    background-color: #1abc9c;
+    bottom: -5px;
+    left: 0;
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+/* Menu Toggle Button */
+.menu-toggle {
+    display: none;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .navbar {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .navbar.active{
+        display: flex;
+    }
+
+    .active .nav-links {
+        display: flex;
+        flex-direction: column;
+        /* width: 100%; */
+        text-align: right;
+    }
+
+    .menu-toggle {
+        display: block;
+        cursor: pointer;
+        font-size: 1.5rem;
+        margin-left: auto;
+    }
+}
+
+
