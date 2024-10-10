@@ -1,7 +1,7 @@
 import ballerina/http;
 import ballerina/io;
-import ballerinax/mysql;
 import ballerina/sql;
+import ballerinax/mysql;
 import ballerinax/mysql.driver as _;
 
 type databaseConfig record {|
@@ -41,12 +41,12 @@ service /chatbot on new http:Listener(8080) {
         // Send the response back to the client
         check caller->respond(response);
 
-
-   
     }
+
     // Resource function to handle POST requests to the /getContent endpoint
     resource function post getContent(http:Caller caller, http:Request req) returns error? {
-        json _ = check req.getJsonPayload();
+        json payload = check req.getJsonPayload();
+        string message = (check payload.message).toString();
 
         // Execute the SQL query
         // stream<record {|anydata...;|}, sql:Error?> resultStream = pool->query(`SELECT * FROM content`);
@@ -60,14 +60,14 @@ service /chatbot on new http:Listener(8080) {
         //     }
         //     resultJson.push(rowJson);
         // });
-        json resultJson = check  getContent();
+        json resultJson = check getContent(message);
 
         // Send the result back to the client
         check caller->respond(resultJson);
     }
-
-    
 }
+
+// }
 
 // Function to call the Python chatbot
 
@@ -110,25 +110,24 @@ function callPythonChatbot(string message) returns json|error {
 }
 
 // get content from database
-function getContent() returns json|error {
+function getContent(string message) returns json|error {
+
+    io:println("Searching for content with category: " + message);
 
     // Execute the SQL query
-        stream<record {|anydata...;|}, sql:Error?> resultStream = pool->query(`SELECT * FROM content`);
-        json[] resultJson = [];
+    sql:ParameterizedQuery query = `SELECT * FROM content co LEFT OUTER JOIN category c ON co.category_id = c.category_id WHERE c.name LIKE '%' ${message}  '%'`;
+    stream<record {|anydata...;|}, sql:Error?> resultStream = pool->query(query);
+    json[] resultJson = [];
 
-        // Process the result stream and build the JSON response
-        check resultStream.forEach(function(record {|anydata...;|} row) {
-            map<json> rowJson = {};
-            foreach var [key, value] in row.entries() {
-                rowJson[key] = <json>value;
-            }
-            resultJson.push(rowJson);
-        });
-        
-        return resultJson;
+    // Process the result stream and build the JSON response
+    check resultStream.forEach(function(record {|anydata...;|} row) {
+        map<json> rowJson = {};
+        foreach var [key, value] in row.entries() {
+            rowJson[key] = <json>value;
         }
+        resultJson.push(rowJson);
+    });
 
-
-
-
+    return resultJson;
+}
 

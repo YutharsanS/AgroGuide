@@ -10,4 +10,6 @@ Content-Type: application/json
 POST http://localhost:8080/chatbot/getContent
 Content-Type: application/json
 
-{}
+{
+  "message": "co"
+}
