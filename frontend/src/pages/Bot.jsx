@@ -5,12 +5,16 @@ import ReactMarkdown from 'react-markdown'
 import './Bot.css';
 
 function Bot() {
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  
   const [messages, setMessages] = useState([
     { sender: 'bot', text: 'Hello! How can I help you with your farming concerns today?' }
   ]);
   const [input, setInput] = useState('');
 
   const handleSendMessage = async () => {
+    setIsButtonDisabled(true);
+    
     if (input.trim()) {
       // Add user message to chat
       const userMessage = { sender: 'user', text: input };
@@ -28,6 +32,7 @@ function Bot() {
         console.error('Error sending message to backend:', error);
       }
       setInput('');
+      setIsButtonDisabled(false);
     }
   };
 
@@ -53,7 +58,11 @@ function Bot() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
         />
-        <button className="send-btn" onClick={handleSendMessage}>
+        <button 
+          className="send-btn" 
+          onClick={handleSendMessage} 
+          disabled={isButtonDisabled}
+        >
           Send
         </button>
       </div>
