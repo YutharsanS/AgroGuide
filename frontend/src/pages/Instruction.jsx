@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import './Instruction.css';
 
 function Instruction() {
@@ -11,15 +12,13 @@ function Instruction() {
     setLoading(true);
     setError('');
     try {
-      const response = await fetch(`https://your-backend-api.com/plants?name=${plantName}`);
-      const data = await response.json();
-      if (data) {
-        setPlantData(data);
-      } else {
-        setError('No data found for this plant.');
-      }
+      const response = await axios.post("http://localhost:8080/chatbot/getContent", {
+        message : plantName,
+      });
+      console.log(response.data);
+      setPlantData(response.data);
     } catch (err) {
-      setError('Failed to fetch plant data.');
+      setError('Failed to fetch plant data.', err);
     }
     setLoading(false);
   };
@@ -55,14 +54,21 @@ function Instruction() {
 
       {plantData && (
         <div className="plant-data">
-          <h2 className="plant-name">{plantData.name}</h2>
-          <p className="plant-description">{plantData.description}</p>
+          <h2> Similar Questions </h2>
+          <ul>
+            {plantData.map((item, index) => (<div key={index}><p>Question: {item.question}</p>
+              <p>Answer: {item.answer}</p></div>))}
+          </ul>
+          
+          
+          {/* <h2 className="plant-name">{plantData.question}</h2>
+          <p className="plant-description">{plantData.answer}</p>
           <h3>Growing Instructions:</h3>
           <ul className="growing-instructions">
             {plantData.instructions.map((instruction, index) => (
               <li key={index}>{instruction}</li>
             ))}
-          </ul>
+          </ul> */}
         </div>
       )}
     </div>
