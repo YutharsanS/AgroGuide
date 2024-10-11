@@ -10,9 +10,6 @@ import ballerinax/mongodb;
 // import ballerina/io;
 import ballerina/lang.value;
 
-
-
-
 // type databaseConfig record {|
 //     string host;
 //     string user;
@@ -251,3 +248,74 @@ type QAResult record {|
     string answer;
 |};
 
+
+
+// Service for community_posts
+service /community on new http:Listener(8081) {
+ 
+    resource function get .(http:Caller caller) returns error? {
+        
+        // Access the database and collection using name
+        mongodb:Database db = check mongoDb->getDatabase("test");
+        mongodb:Collection postCollection = check db->getCollection("community_posts");
+
+        PostTest[] response = check getPosts(postCollection);
+        
+        // Convert the stream to a JSON array
+        json responseJson = value:toJson(response);
+        
+        // Logging to verify
+        io:println("response: ", responseJson);
+
+        // Send to frontend
+        check caller->respond(responseJson);
+    }
+}
+
+public type Post record {|
+    string userName;
+    string postMessage;
+    string postDate;
+    Reply[] replies;
+|};
+
+public type Reply record {|
+    string userName;
+    string replyMessage;
+    string replyDate;
+|};
+
+public type PostTest record {|
+    string userName;
+    string postMessage;
+    string postDate;
+|};
+
+function getPosts(mongodb:Collection postCollection) returns PostTest[]|error {
+    // Get all posts from db
+    stream<PostTest, error?> resultStream = check postCollection->find();
+
+    PostTest[] results = [];
+    
+    error? e = resultStream.forEach(function(json doc) {
+        do {
+            // Access the 'question' and 'answer' fields from the JSON document
+            string userName = check value:ensureType(doc.userName, string);
+            string answer = check value:ensureType(doc.postMessage, string);
+            string postDate = check value:ensureType(doc.postDate, string);
+            // Reply[] replies = check value:ensureType(doc.replies, Reply[]);
+
+            PostTest result = { userName: userName, postMessage: answer, postDate: postDate };
+            results.push(result);
+        } on fail var err {
+            io:println("Error processing document: ", err.message());
+        }
+
+        return;
+    });
+
+    if e is error {
+        return e;
+    }
+    return results;
+}
