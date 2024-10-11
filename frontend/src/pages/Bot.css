@@ -84,4 +84,14 @@
   .send-btn:hover {
     background-color: #218838;
   }
+
+  .send-btn:disabled {
+    background-color: #6c757d;
+  }
+
+  .send-btn:disabled:hover {
+    background-color: #6c757d;
+    cursor: not-allowed;
+  }
+  
   
