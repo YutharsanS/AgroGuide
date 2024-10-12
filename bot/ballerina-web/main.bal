@@ -48,11 +48,12 @@ public type Reply record {|
     string replyDate;
 |};
 
-public type PostTest record {|
-    string userName;
-    string postMessage;
-    string postDate;
-|};
+// public type PostTest record {|
+//     string userName;
+//     string postMessage;
+//     string postDate;
+//     Reply[] replies;
+// |};
 
 //core configure
 @http:ServiceConfig {
@@ -119,13 +120,13 @@ service /chatbot on new http:Listener(8080) {
         check caller->respond(resultJson);
     }
 
-     resource function get .(http:Caller caller) returns error? {
+     resource function get allposts(http:Caller caller) returns error? {
         
         // Access the database and collection using name
         mongodb:Database db = check mongoDb->getDatabase("test");
         mongodb:Collection postCollection = check db->getCollection("community_posts");
 
-        PostTest[] response = check getPosts(postCollection);
+        Post[] response = check getPosts(postCollection);
         
         // Convert the stream to a JSON array
         json responseJson = value:toJson(response);
@@ -345,11 +346,11 @@ function testVectorSearch(string userInput) returns json|error {
     return similarAnswersJson;
 }
 
-function getPosts(mongodb:Collection postCollection) returns PostTest[]|error {
+function getPosts(mongodb:Collection postCollection) returns Post[]|error {
     // Get all posts from db
-    stream<PostTest, error?> resultStream = check postCollection->find();
+    stream<Post, error?> resultStream = check postCollection->find();
 
-    PostTest[] results = [];
+    Post[] results = [];
     
     error? e = resultStream.forEach(function(json doc) {
         do {
@@ -357,9 +358,12 @@ function getPosts(mongodb:Collection postCollection) returns PostTest[]|error {
             string userName = check value:ensureType(doc.userName, string);
             string answer = check value:ensureType(doc.postMessage, string);
             string postDate = check value:ensureType(doc.postDate, string);
-            // Reply[] replies = check value:ensureType(doc.replies, Reply[]);
+            Reply[] replies = check getReplies(doc.replies);
 
-            PostTest result = { userName: userName, postMessage: answer, postDate: postDate };
+            // Check if 'replies' field exists and is of type json[]
+
+
+            Post result = { userName: userName, postMessage: answer, postDate: postDate, replies: replies };
             results.push(result);
         } on fail var err {
             io:println("Error processing document: ", err.message());
@@ -391,3 +395,33 @@ type CategoryDocument record {|
     string category;
     string content;
 |};
+
+
+
+
+
+function getReplies(json|error? replyStream) returns Reply[]|error {
+    Reply[] results = [];
+    
+    if (replyStream is error) {
+        return replyStream;
+    }
+    
+    if (replyStream is json[]) {
+        foreach json doc in replyStream {
+            do {
+                // Access the 'userName', 'replyMessage', and 'replyDate' fields from the JSON document
+                string userName = check value:ensureType(doc.userName, string);
+                string answer = check value:ensureType(doc.replyMessage, string);
+                string replyDate = check value:ensureType(doc.replyDate, string);
+
+                Reply result = { userName: userName, replyMessage: answer, replyDate: replyDate };
+                results.push(result);
+            } on fail var err {
+                io:println("Error processing document: ", err.message());
+            }
+        }
+    }
+
+    return results;
+}

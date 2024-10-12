@@ -1,25 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './Community.css';
 
 function Community() {
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      name: 'John Doe',
-      text: 'What is the best time to plant tomatoes?',
-      replies: [
-        { id: 1, name: 'Jane Smith', text: 'I usually plant them in early spring for best results.' }
-      ]
-    },
-    {
-      id: 2,
-      name: 'Anna Green',
-      text: 'How do you keep pests away from lettuce crops?',
-      replies: [
-        { id: 2, name: 'Sam Farmer', text: 'Using organic pesticides has worked for me!' }
-      ]
-    }
-  ]);
+  const [messages, setMessages] = useState([]);
 
   const [newMessage, setNewMessage] = useState('');
   const [newName, setNewName] = useState('');
@@ -27,6 +11,22 @@ function Community() {
   const [replyText, setReplyText] = useState('');  // State for the reply message
   const [replyingTo, setReplyingTo] = useState(null);  // Track which message we're replying to
 
+  // Fetch all the posts from backend
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/chatbot/allposts'); // Replace with your backend endpoint
+        console.log(response.data);
+        setMessages(response.data);
+      } catch (error) {
+        console.error('Error fetching messages:', error);
+      }
+    };
+
+    fetchMessages();
+  }, []);
+  
+  
   const handlePostMessage = () => {
     if (newName.trim() && newMessage.trim()) {
       const newMessageObj = {
@@ -88,17 +88,17 @@ function Community() {
       </div>
 
       <div className="messages-section">
-        {messages.map((msg) => (
-          <div key={msg.id} className="message-container">
-            <p className="message-name">{msg.name}:</p>
-            <p className="message-text">{msg.text}</p>
+        {messages.map((msg, index) => (
+          <div key={index} className="message-container">
+            <p className="message-name">{msg.userName}:</p>
+            <p className="message-text">{msg.postMessage}</p>
 
             {/* Replies section */}
             <div className="replies-section">
-              {msg.replies.map((reply) => (
-                <div key={reply.id} className="reply-container">
-                  <p className="reply-name">{reply.name}:</p>
-                  <p className="reply-text">{reply.text}</p>
+              {msg.replies.map((reply, index) => (
+                <div key={index} className="reply-container">
+                  <p className="reply-name">{reply.userName}:</p>
+                  <p className="reply-text">{reply.replyMessage}</p>
                 </div>
               ))}
 
