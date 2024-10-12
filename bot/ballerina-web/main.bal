@@ -10,6 +10,19 @@ import ballerinax/mongodb;
 // import ballerina/io;
 import ballerina/lang.value;
 
+
+// MongoDB Atlas configuration
+configurable string connection_string = "mongodb+srv://yutharsan:0585@cluster0.z8x37.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+configurable string database = "test";
+configurable string qa_collection_name = "qa_documents";
+configurable string category_collection_name = "category";
+
+mongodb:Client mongoDb = check new ({
+    connection: connection_string
+});
+
+
+
 // type databaseConfig record {|
 //     string host;
 //     string user;
@@ -21,6 +34,25 @@ import ballerina/lang.value;
 // configurable databaseConfig connection = ?;
 
 // mysql:Client pool = check new (...connection);
+
+public type Post record {|
+    string userName;
+    string postMessage;
+    string postDate;
+    Reply[] replies;
+|};
+
+public type Reply record {|
+    string userName;
+    string replyMessage;
+    string replyDate;
+|};
+
+public type PostTest record {|
+    string userName;
+    string postMessage;
+    string postDate;
+|};
 
 //core configure
 @http:ServiceConfig {
@@ -73,6 +105,36 @@ service /chatbot on new http:Listener(8080) {
 
         // Send the result back to the client
         check caller->respond(resultJson);
+    }
+
+    // Resource function to handle POST requests to the /getInstruction endpoint
+    resource function post getInstruction(http:Caller caller, http:Request req) returns error? {
+        json payload = check req.getJsonPayload();
+        string message = (check payload.message).toString();
+
+        json result = check testCategorySearch(message);
+        json resultJson = result;
+
+        // Send the result back to the client
+        check caller->respond(resultJson);
+    }
+
+     resource function get .(http:Caller caller) returns error? {
+        
+        // Access the database and collection using name
+        mongodb:Database db = check mongoDb->getDatabase("test");
+        mongodb:Collection postCollection = check db->getCollection("community_posts");
+
+        PostTest[] response = check getPosts(postCollection);
+        
+        // Convert the stream to a JSON array
+        json responseJson = value:toJson(response);
+        
+        // Logging to verify
+        io:println("response: ", responseJson);
+
+        // Send to frontend
+        check caller->respond(responseJson);
     }
 }
 
@@ -139,18 +201,6 @@ function callPythonChatbot(string message) returns json|error {
 
 //     return resultJson;
 // }
-
-
-
-// MongoDB Atlas configuration
-configurable string connection_string = "mongodb+srv://yutharsan:0585@cluster0.z8x37.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-configurable string database = "test";
-configurable string collection_name = "qa_documents";
-
-mongodb:Client mongoDb = check new ({
-    connection: connection_string
-});
-
 function parseEmbedding(json embeddingJson) returns float[]|error {
     float[] embedding = [];
     foreach var value in <json[]>embeddingJson {
@@ -215,81 +265,85 @@ function findSimilarAnswers(float[] queryEmbedding, mongodb:Database database, m
     return results;
 }
 
+function findCategory(string userInput, mongodb:Database datstringabase, mongodb:Collection dataCollection) returns CategoryDocument[]|error {
+    // Mongo db query
+    map<json>[] pipeline = [
+        {
+            "$search": {
+            "index": "category_search",  // Specify the index name. "default" is the name if you haven't created a custom one.
+            "text": {
+                "query": userInput,  // The search term (with potential typos).
+                "path": "category", // The field to search within.
+                "fuzzy": {
+                "maxEdits": 1,  // Allow up to 2 edits (insertions, deletions, or substitutions).
+                "prefixLength": 3 // The number of initial characters that must match exactly.
+        }
+      }
+    }
+  }
+    ];
+
+    // The aggregate method return a stream containg results
+    stream<CategoryDocument, error?> resultStream = check dataCollection->aggregate(pipeline);
+
+    CategoryDocument[] results = [];
+
+    error? e = resultStream.forEach(function(json doc) {
+            do {
+                // Access the 'question' and 'answer' fields from the JSON document
+                string category = check value:ensureType(doc.category, string);
+                string content = check value:ensureType(doc.content, string);
+
+                CategoryDocument caResult = { category: category, content: content};
+                results.push(caResult);
+            } on fail var err {
+                io:println("Error processing document: ", err.message());
+            }
+
+            return;
+        }
+    );
+
+    if e is error {
+        return e;
+    }
+
+    return results;
+}
+
+function testCategorySearch(string userInput) returns json|error {
+    // Access the database and collection using name
+    mongodb:Database qa_database = check mongoDb->getDatabase(database);
+    mongodb:Collection dataCollection = check qa_database->getCollection(category_collection_name);
+
+    // Test finding similar answers
+    CategoryDocument[] similarDocs = check findCategory(userInput, qa_database, dataCollection);
+
+    // Convert the similarAnswers array to JSON
+    json similarAnswersJson = value:toJson(similarDocs);
+
+    // Print the JSON (optional)
+    io:println(similarAnswersJson);
+
+    return similarAnswersJson;
+}
 function testVectorSearch(string userInput) returns json|error {
     // Access the database and collection using name
     mongodb:Database qa_database = check mongoDb->getDatabase(database);
-    mongodb:Collection dataCollection = check qa_database->getCollection(collection_name);
+    mongodb:Collection dataCollection = check qa_database->getCollection(qa_collection_name);
 
     // Test finding similar answers
     float[] queryEmbedding = check generateEmbedding(userInput);
     QAResult[] similarAnswers = check findSimilarAnswers(queryEmbedding, qa_database, dataCollection);
-    
+
     // Convert the similarAnswers array to JSON
     json similarAnswersJson = value:toJson(similarAnswers);
 
     // Print the JSON (optional)
     io:println(similarAnswersJson);
-    
+
     return similarAnswersJson;
 }
-
-// public function main() returns error? {
-//     check testVectorSearch("How can I increase water draining in plants");
-// }
-
-type QADocument record {|
-    string question;
-    string answer;
-    float[] embedding;
-|};
-
-type QAResult record {|
-    string question;
-    string answer;
-|};
-
-
-
-// Service for community_posts
-service /community on new http:Listener(8081) {
- 
-    resource function get .(http:Caller caller) returns error? {
-        
-        // Access the database and collection using name
-        mongodb:Database db = check mongoDb->getDatabase("test");
-        mongodb:Collection postCollection = check db->getCollection("community_posts");
-
-        PostTest[] response = check getPosts(postCollection);
-        
-        // Convert the stream to a JSON array
-        json responseJson = value:toJson(response);
-        
-        // Logging to verify
-        io:println("response: ", responseJson);
-
-        // Send to frontend
-        check caller->respond(responseJson);
-    }
-}
-
-public type Post record {|
-    string userName;
-    string postMessage;
-    string postDate;
-    Reply[] replies;
-|};
-
-public type Reply record {|
-    string userName;
-    string replyMessage;
-    string replyDate;
-|};
-
-public type PostTest record {|
-    string userName;
-    string postMessage;
-    string postDate;
-|};
 
 function getPosts(mongodb:Collection postCollection) returns PostTest[]|error {
     // Get all posts from db
@@ -319,3 +373,21 @@ function getPosts(mongodb:Collection postCollection) returns PostTest[]|error {
     }
     return results;
 }
+
+
+
+type QADocument record {|
+    string question;
+    string answer;
+    float[] embedding;
+|};
+
+type QAResult record {|
+    string question;
+    string answer;
+|};
+
+type CategoryDocument record {|
+    string category;
+    string content;
+|};
