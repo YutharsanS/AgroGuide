@@ -195,9 +195,6 @@ version = "0.0.0"
 dependencies = [
 	{org = "ballerina", name = "jballerina.java"}
 ]
-modules = [
-	{org = "ballerina", packageName = "lang.value", moduleName = "lang.value"}
-]
 
 [[package]]
 org = "ballerina"
@@ -253,6 +250,20 @@ dependencies = [
 
 [[package]]
 org = "ballerina"
+name = "sql"
+version = "1.14.1"
+dependencies = [
+	{org = "ballerina", name = "io"},
+	{org = "ballerina", name = "jballerina.java"},
+	{org = "ballerina", name = "lang.object"},
+	{org = "ballerina", name = "time"}
+]
+modules = [
+	{org = "ballerina", packageName = "sql", moduleName = "sql"}
+]
+
+[[package]]
+org = "ballerina"
 name = "task"
 version = "2.5.0"
 dependencies = [
@@ -290,15 +301,17 @@ modules = [
 
 [[package]]
 org = "ballerinax"
-name = "mongodb"
-version = "5.0.0"
+name = "mysql"
+version = "1.13.1"
 dependencies = [
 	{org = "ballerina", name = "crypto"},
+	{org = "ballerina", name = "io"},
 	{org = "ballerina", name = "jballerina.java"},
-	{org = "ballerina", name = "log"}
+	{org = "ballerina", name = "sql"},
+	{org = "ballerina", name = "time"}
 ]
 modules = [
-	{org = "ballerinax", packageName = "mongodb", moduleName = "mongodb"}
+	{org = "ballerinax", packageName = "mysql", moduleName = "mysql"}
 ]
 
 [[package]]
@@ -316,9 +329,9 @@ version = "0.1.0"
 dependencies = [
 	{org = "ballerina", name = "http"},
 	{org = "ballerina", name = "io"},
-	{org = "ballerina", name = "lang.value"},
+	{org = "ballerina", name = "sql"},
 	{org = "ballerinai", name = "observe"},
-	{org = "ballerinax", name = "mongodb"},
+	{org = "ballerinax", name = "mysql"},
 	{org = "ballerinax", name = "mysql.driver"}
 ]
 modules = [
