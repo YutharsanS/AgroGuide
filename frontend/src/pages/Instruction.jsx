@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './Instruction.css';
+import '../components/PlantList';
+import PlantList from '../components/PlantList';
 
 function Instruction() {
   const [plantName, setPlantName] = useState('');
@@ -12,7 +14,7 @@ function Instruction() {
     setLoading(true);
     setError('');
     try {
-      const response = await axios.post("http://localhost:8080/chatbot/getContent", {
+      const response = await axios.post("http://localhost:8080/chatbot/getInstruction", {
         message : plantName,
       });
       console.log(response.data);
@@ -36,7 +38,7 @@ function Instruction() {
     <div className="instruction-container">
       <h1 className="instruction-title">Plant Instructions</h1>
       <p className="instruction-subtitle">Enter a plant name to get detailed instructions on how to grow it effectively.</p>
-      
+
       <form className="instruction-form" onSubmit={handleSubmit}>
         <input
           type="text"
@@ -54,21 +56,7 @@ function Instruction() {
 
       {plantData && (
         <div className="plant-data">
-          <h2> Similar Questions </h2>
-          <ul>
-            {plantData.map((item, index) => (<div key={index}><p>Question: {item.question}</p>
-              <p>Answer: {item.answer}</p></div>))}
-          </ul>
-          
-          
-          {/* <h2 className="plant-name">{plantData.question}</h2>
-          <p className="plant-description">{plantData.answer}</p>
-          <h3>Growing Instructions:</h3>
-          <ul className="growing-instructions">
-            {plantData.instructions.map((instruction, index) => (
-              <li key={index}>{instruction}</li>
-            ))}
-          </ul> */}
+          <PlantList plantData={plantData}/>
         </div>
       )}
     </div>
