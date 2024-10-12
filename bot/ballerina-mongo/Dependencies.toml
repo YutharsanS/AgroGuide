@@ -303,7 +303,7 @@ modules = [
 
 [[package]]
 org = "yutharsan"
-name = "mongo_test"
+name = "ballerina_mongo"
 version = "0.1.0"
 dependencies = [
 	{org = "ballerina", name = "http"},
@@ -313,6 +313,6 @@ dependencies = [
 	{org = "ballerinax", name = "mongodb"}
 ]
 modules = [
-	{org = "yutharsan", packageName = "mongo_test", moduleName = "mongo_test"}
+	{org = "yutharsan", packageName = "ballerina_mongo", moduleName = "ballerina_mongo"}
 ]
 
