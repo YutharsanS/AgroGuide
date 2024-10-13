@@ -1,5 +1,8 @@
 import './Footer.css';
 
+import facebook from '../assets/facebook_g.png';
+import youtube from '../assets/youtube_g.png';
+
 function Footer() {
     return (
         <footer className="footer">
@@ -24,6 +27,11 @@ function Footer() {
                     <p>Email: support@agricultureguide.com</p>
                     <p>Phone: +123 456 7890</p>
                     <p>Address: 123 Green Road, Farmville, USA</p>
+                </div>
+                <div className="footer-section social">
+                    <h2>Follow Us</h2>
+                    <a href="https://www.facebook.com"><img src={facebook} alt="Facebook" /></a>
+                    <a href="https://www.youtube.com"><img src={youtube} alt="YouTube" /></a>
                 </div>
             </div>
             <div className="footer-bottom">
