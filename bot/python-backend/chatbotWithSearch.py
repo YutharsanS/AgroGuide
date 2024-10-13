@@ -117,9 +117,9 @@ def chatbot():
 
     # Construct the message content for the model
     prompt = (
-        "Hello! I'm your agricultural assistant. "
-        "Please provide information about the plant you are interested in, and I will guide you. "
-        "Here is what you said: '{user_message}'."
+        "your are inteligent agricultural assistant. "
+        "Using provided information about the plant user interested in, guide him. "
+        "Here is what user said: '{user_message}'."
     ).format(user_message=user_message)
 
     # Invoke the model with the user's message
