@@ -89,7 +89,7 @@ function Bot() {
             Send
           </button>
           <button 
-            className="send-btn" 
+            className="clear-btn" 
             onClick={handleClearMessages}
           >
             Clear Messages
