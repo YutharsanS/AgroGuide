@@ -4,6 +4,8 @@ import './Instruction.css';
 import '../components/PlantList';
 import PlantList from '../components/PlantList';
 
+import instruction from '../assets/instruction.png';
+
 function Instruction() {
   const [plantName, setPlantName] = useState('');
   const [plantData, setPlantData] = useState(null);
@@ -37,6 +39,7 @@ function Instruction() {
   return (
     <div className="instruction-container">
       <h1 className="instruction-title">Plant Instructions</h1>
+      <center><img src={instruction} alt="instruction" className="instruction-image" /></center>
       <p className="instruction-subtitle">Enter a plant name to get detailed instructions on how to grow it effectively.</p>
 
       <form className="instruction-form" onSubmit={handleSubmit}>

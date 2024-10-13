@@ -1,10 +1,16 @@
  .bot-page-container {
-    max-width: 700px;
-    margin: 100px auto;
+    max-width: 800px;
+    margin: 120px auto;
     padding: 20px;
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .bot-page-container img {
+    max-width: 500px;
+    border-radius: 50px;
+    margin-bottom: 10px;
   }
   
   .bot-title {
