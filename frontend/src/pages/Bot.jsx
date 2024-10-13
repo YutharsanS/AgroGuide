@@ -20,9 +20,13 @@ function Bot() {
     }
   }, []);
 
+  useEffect(() => {
+    autoScrollToBottom();
+  }, [messages]);
+
   const handleSendMessage = async () => {
     setIsButtonDisabled(true);
-    
+
     if (input.trim()) {
       // Add user message to chat
       const userMessage = { sender: 'user', text: input };
@@ -49,6 +53,7 @@ function Bot() {
       }
       setInput('');
       setIsButtonDisabled(false);
+
     }
   };
 
@@ -56,47 +61,54 @@ function Bot() {
     // Clear messages from state and local storage
     setMessages([]);
     localStorage.removeItem('chatMessages');
-    };
-  
-    return (
-      <div className="bot-page-container">
-        <h1 className="bot-title">Chat with AgroBot</h1>
-        <center><img src={chatbot} alt="chat bot image" /></center>
-        <div className="chat-window">
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={`chat-message ${message.sender === 'bot' ? 'bot-message' : 'user-message'}`}
-            >
-              <ReactMarkdown>{message.text}</ReactMarkdown>
-            </div>
-          ))}
-        </div>
-  
-        <div className="chat-input-container">
-          <input
-            type="text"
-            className="chat-input"
-            placeholder="Type your message..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-          />
-          <button 
-            className="send-btn" 
-            onClick={handleSendMessage} 
-            disabled={isButtonDisabled}
-          >
-            Send
-          </button>
-          <button 
-            className="clear-btn" 
-            onClick={handleClearMessages}
-          >
-            Clear Messages
-          </button>
-        </div>
-      </div>
-    );
+  };
+
+  const autoScrollToBottom = () => {
+    const chatWindow = document.querySelector('.chat-window');
+    if (chatWindow) {
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
   }
+
+  return (
+    <div className="bot-page-container">
+      <h1 className="bot-title">Chat with AgroBot</h1>
+      <center><img src={chatbot} alt="chat bot image" /></center>
+      <div className="chat-window">
+        {messages.map((message, index) => (
+          <div
+            key={index}
+            className={`chat-message ${message.sender === 'bot' ? 'bot-message' : 'user-message'}`}
+          >
+            <ReactMarkdown>{message.text}</ReactMarkdown>
+          </div>
+        ))}
+      </div>
+
+      <div className="chat-input-container">
+        <input
+          type="text"
+          className="chat-input"
+          placeholder="Type your message..."
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+        />
+        <button
+          className="send-btn"
+          onClick={handleSendMessage}
+          disabled={isButtonDisabled}
+        >
+          Send
+        </button>
+        <button
+          className="clear-btn"
+          onClick={handleClearMessages}
+        >
+          Clear Messages
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default Bot;
