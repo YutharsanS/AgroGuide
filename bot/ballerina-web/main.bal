@@ -153,11 +153,11 @@
             string uuid1String = uuid:createType1AsString();
 
             // Create the _id as a JSON object
-            json id = { "$oid": uuid1String.substring(36) };
+            json id = { "$oid": uuid1String.substring(0, 24) };
             io:println(id);
 
-            Post newPost = {
-                _id: id,
+            Post_i newPost = {
+                // _id: (),
                 userName: check payload.userName,
                 postMessage: check payload.postMessage,
                 postDate: check payload.postDate,
@@ -170,6 +170,7 @@
 
             // Insert the new post
             mongodb:Error? result = check postCollection->insertOne(newPost);
+            io:println(result);
 
             // Prepare the response
             json response = {
@@ -386,7 +387,7 @@
 
 
                 Post result = { _id: check doc._id ,userName: userName, postMessage: answer, postDate: postDate, replies: replies};
-
+                io:println("result: ", result);
                 results.push(result);
             } on fail var err {
                 io:println("Error processing document: ", err.message());
