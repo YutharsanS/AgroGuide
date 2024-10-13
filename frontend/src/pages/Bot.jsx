@@ -3,6 +3,7 @@ import axios from "axios"
 import ReactMarkdown from 'react-markdown'
 
 import './Bot.css';
+import chatbot from '../assets/chat-bot.jpg'
 
 function Bot() {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
@@ -39,6 +40,7 @@ function Bot() {
   return (
     <div className="bot-page-container">
       <h1 className="bot-title">Chat with AgroBot</h1>
+      <center><img src={chatbot} alt="chat bot image" /></center>
       <div className="chat-window">
         {messages.map((message, index) => (
           <div

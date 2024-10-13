@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Community.css';
+import communityImg from '../assets/community_.jpg';
 
 function Community() {
   const [messages, setMessages] = useState([]);
@@ -74,7 +75,7 @@ function Community() {
   return (
     <div className="community-container">
       <h2 className="community-title">Community Forum</h2>
-
+      <center><img src={communityImg} alt="community image" /></center>
       {/* Form to post a new message */}
       <div className="post-message-form">
         <input

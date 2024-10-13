@@ -10,7 +10,7 @@ import heroImage from "../assets/hero.jpg"
 export default function Home() {
     return (
         <div className="Home-page">
-            <h1>Home</h1>
+            {/* <h1>Home</h1> */}
 
             <section id="hero" className="left-align">
                 <div className="text-content">
