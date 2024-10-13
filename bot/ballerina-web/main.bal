@@ -1,3 +1,4 @@
+
     import ballerina/http;
     import ballerina/io;
     import ballerinax/mongodb;
@@ -497,4 +498,5 @@
     mongodb:UpdateResult result = check collection->updateOne({ "_id": postId }, updateDoc, options);
 
     return result.modifiedCount > 0 || result.upsertedId != ();
+
 }

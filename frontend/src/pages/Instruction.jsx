@@ -16,7 +16,7 @@ function Instruction() {
     setLoading(true);
     setError('');
     try {
-      const response = await axios.post("http://localhost:8080/chatbot/getInstruction", {
+      const response = await axios.post("http://localhost:8080/chatbot/getContent", {
         message : plantName,
       });
       console.log(response.data);
