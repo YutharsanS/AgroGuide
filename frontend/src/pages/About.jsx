@@ -1,12 +1,15 @@
 import React from "react";
 import './About.css'; // Assuming you'll add some styles for the About page
 
+import about from '../assets/about_c.png';
+
 const About = () => {
   return (
     <div className="about-container">
       <div className="about-header">
         <h1>About Us</h1>
         <p>Your Trusted Companion for Modern Farming</p>
+        <img src={about} alt="About Us" />
       </div>
 
       <div className="about-content">

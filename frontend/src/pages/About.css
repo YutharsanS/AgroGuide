@@ -26,6 +26,11 @@
     margin-bottom: 0;
 }
 
+.about-container .about-header img {
+    max-width: 750px;
+    
+}
+
 .about-container .about-content h2 {
     font-size: 2em;
     color: #1a5a40;
