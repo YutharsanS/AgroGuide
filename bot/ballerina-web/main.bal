@@ -53,7 +53,7 @@
             allowMethods: ["GET", "POST", "OPTIONS"]
         }
     }
-    // Define the service
+    // Define the servic
     service /chatbot on new http:Listener(8080) {
 
         // Resource function to handle POST requests to the /chatbot endpoint
