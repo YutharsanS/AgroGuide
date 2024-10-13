@@ -16,7 +16,7 @@ function Footer() {
                         <li><a href="/bot">AgroBot</a></li>
                         <li><a href="/community">Community</a></li>
                         <li><a href="/about">About Us</a></li>
-                        <li><a href="/contact">Contact</a></li>
+                        {/* <li><a href="/contact">Contact</a></li> */}
                     </ul>
                 </div>
                 <div className="footer-section contact">
