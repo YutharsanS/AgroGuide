@@ -8,7 +8,7 @@
   }
   .bot-page-container img {
     max-width: 500px;
-    border-radius: 0px;
+    border-radius: 8px;
     margin-bottom: 20px;
     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
   }
@@ -103,7 +103,7 @@
   .clear-btn {
     padding: 5px 5px;
     margin-left: 10px;
-    background-color: #6c757d;
+    background-color:#b22222;
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -113,7 +113,7 @@
   }
 
   .clear-btn:hover {
-    background-color: #5a6268;
+    background-color: #851919;
   }
   
 /* Define the animation for new messages */

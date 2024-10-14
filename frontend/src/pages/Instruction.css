@@ -64,6 +64,15 @@
   .submit-btn:hover {
     background-color: #218838;
   }
+
+  .submit-btn:disabled {
+    background-color: #6c757d;
+  }
+
+  .submit-btn:disabled:hover {
+    background-color: #6c757d;
+    cursor: not-allowed;
+  }
   
   .loading {
     text-align: center;
