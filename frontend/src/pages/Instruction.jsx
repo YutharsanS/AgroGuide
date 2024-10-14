@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+
 import axios from 'axios';
 import './Instruction.css';
 import '../components/PlantList';
@@ -42,6 +44,10 @@ function Instruction() {
     
   };
 
+  const handleExplainByBot = () => {
+    localStorage.setItem('plantData', JSON.stringify(plantData));
+  };
+
   return (
     <div className="instruction-container">
       <h1 className="instruction-title">Plant Instructions</h1>
@@ -66,6 +72,7 @@ function Instruction() {
       {plantData && (
         <div className="plant-data">
           <PlantList plantData={plantData}/>
+          <Link to="/bot" className="explain-btn" onClick={handleExplainByBot}>Explain by Bot</Link>
         </div>
       )}
     </div>
