@@ -1,7 +1,6 @@
-import React from "react";
 import './About.css'; // Assuming you'll add some styles for the About page
 
-import about from '../assets/about_c.png';
+import about from '../assets/about.png';
 
 const About = () => {
   return (
@@ -16,7 +15,7 @@ const About = () => {
         <section className="mission-section">
           <h2>Our Mission</h2>
           <p>
-            At Agri Guide, our mission is to empower farmers by providing them with easy access to accurate, timely, and effective agricultural knowledge. 
+            At AgroGuide, our mission is to empower farmers by providing them with easy access to accurate, timely, and effective agricultural knowledge. 
             We believe in blending traditional farming techniques with cutting-edge technology to help farmers enhance productivity, sustainability, and profitability.
           </p>
         </section>
