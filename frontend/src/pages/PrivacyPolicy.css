@@ -1,0 +1,38 @@
+.privacy-policy-container {
+    max-width: 800px;
+    margin: 120px auto;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+.privacy-policy-container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.privacy-policy-container h2 {
+    margin-top: 20px;
+    color: #333;
+}
+
+.privacy-policy-container p {
+    margin-bottom: 10px;
+}
+
+.privacy-policy-container ul {
+    list-style-type: disc;
+    margin-left: 20px;
+}
+
+.privacy-policy-container ul li {
+    margin-bottom: 10px;
+}
+
+.privacy-policy-container a {
+    color: #007BFF;
+    text-decoration: none;
+}
+
+.privacy-policy-container a:hover {
+    text-decoration: underline;
+}

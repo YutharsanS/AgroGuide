@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+
 import axios from 'axios';
 import './Instruction.css';
 import '../components/PlantList';
 import PlantList from '../components/PlantList';
 
-import instruction from '../assets/instruction.png';
+import instructionImg from '../assets/instruction-page.png';
 
 function Instruction() {
   const [plantName, setPlantName] = useState('');
@@ -13,9 +14,12 @@ function Instruction() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
   const fetchPlantData = async () => {
     setLoading(true);
     setError('');
+    setIsButtonDisabled(true);
     try {
       const response = await axios.post("http://localhost:8080/chatbot/getInstruction", {
         message : plantName,
@@ -26,15 +30,18 @@ function Instruction() {
       setError('Failed to fetch plant data.', err);
     }
     setLoading(false);
+    setIsButtonDisabled(false);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
     if (plantName.trim()) {
       fetchPlantData();
     } else {
       setError('Please enter a valid plant name.');
     }
+    
   };
 
   const handleExplainByBot = () => {
@@ -44,7 +51,7 @@ function Instruction() {
   return (
     <div className="instruction-container">
       <h1 className="instruction-title">Plant Instructions</h1>
-      <center><img src={instruction} alt="instruction" className="instruction-image" /></center>
+      <center><img src={instructionImg} alt="instruction" className="instruction-image" /></center>
       <p className="instruction-subtitle">Enter a plant name to get detailed instructions on how to grow it effectively.</p>
 
       <form className="instruction-form" onSubmit={handleSubmit}>
@@ -55,7 +62,7 @@ function Instruction() {
           value={plantName}
           onChange={(e) => setPlantName(e.target.value)}
         />
-        <button type="submit" className="submit-btn">Get Instructions</button>
+        <button type="submit" className="submit-btn" disabled={isButtonDisabled}>Get Instructions</button>
       </form>
 
       {loading && <p className="loading">Fetching data...</p>}

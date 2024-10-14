@@ -58,7 +58,7 @@
 }
 
 .nav-link:hover {
-    color: #1abc9c;  /* A modern teal color on hover */
+    color: #28a745;  /* A modern teal color on hover */
     transform: translateY(-2px);  /* Slight lift effect on hover */
 }
 
@@ -67,7 +67,7 @@
     position: absolute;
     width: 0;
     height: 2px;
-    background-color: #1abc9c;
+    background-color: #28a745;
     bottom: -5px;
     left: 0;
     transition: width 0.3s ease;
