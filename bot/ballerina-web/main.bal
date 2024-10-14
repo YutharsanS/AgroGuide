@@ -4,12 +4,16 @@
     import ballerina/lang.value;
     import ballerina/uuid;
 
+    import ballerina/data.jsondata;
+
 
     // MongoDB Atlas configuration
     configurable string connection_string = "mongodb+srv://yutharsan:0585@cluster0.z8x37.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
     configurable string database = "test";
     configurable string qa_collection_name = "qa_documents";
     configurable string category_collection_name = "category";
+
+    configurable string pixabay_api_key = "46509145-b431f737a8d5f8c98a40dfb87"; // Need to put this into .env
 
     mongodb:Client mongoDb = check new ({
         connection: connection_string
@@ -44,6 +48,12 @@
     //     Reply[] replies;
     // |};
 
+    public type pixabayResult record {|
+        int total;
+        int totalHits;
+        json[] hits;
+    |};
+
     //core configure
     @http:ServiceConfig {
         cors: {
@@ -68,6 +78,24 @@
 
             // Send the response back to the client
             check caller->respond(response);
+
+        }
+
+        resource function post pixabayAPI(http:Caller caller, http:Request req) returns error? {
+            json payload = check req.getJsonPayload();
+            string category = (check payload.message).toString();
+            io:println("Request " + category);
+
+            http:Client pixabayClient = check new ("https://pixabay.com/api");
+            string endpoint = (string `/?key=${pixabay_api_key}&q=${category}&image_type=photo`);
+            http:Response response = check pixabayClient->get(endpoint);
+            json responseJson = check response.getJsonPayload();
+            pixabayResult responsePixabay = check jsondata:parseAsType(responseJson);
+            
+            // json[] hit = check responseJson.hits;
+            io:println(responsePixabay.hits[0].largeImageURL);
+            string imgurl = (check responsePixabay.hits[0].largeImageURL).toString();
+            check caller->respond({imgurl: imgurl});
 
         }
 
