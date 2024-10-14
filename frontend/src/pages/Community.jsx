@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Community.css';
-import communityImg from '../assets/community_.jpg';
+import communityImg from '../assets/community-page.jpg';
 
 function Community() {
   const [messages, setMessages] = useState([]);

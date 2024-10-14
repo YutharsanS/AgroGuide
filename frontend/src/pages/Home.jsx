@@ -5,12 +5,10 @@ import "./Home.css"
 import chatbotImage from "../assets/chatbot.jpg"
 import communityImage from "../assets/community.jpg"
 import instructionsImage from "../assets/instruction.jpg"
-import heroImage from "../assets/hero.jpg"
 
 export default function Home() {
     return (
         <div className="Home-page">
-            {/* <h1>Home</h1> */}
 
             <section id="hero" className="left-align">
                 <div className="text-content">

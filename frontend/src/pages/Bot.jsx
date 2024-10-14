@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from "axios";
 import ReactMarkdown from 'react-markdown';
 
 import './Bot.css';
-import chatbot from '../assets/chat-bot.jpg';
+import chatbotImg from '../assets/chatbot-page.jpg';
 
 function Bot() {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
@@ -33,6 +33,18 @@ function Bot() {
       localStorage.removeItem('plantData');
     }
   }, []);
+
+  useEffect(() => {
+    autoScrollToBottom();
+  }, [messages]);
+
+  const autoScrollToBottom = () => {
+    const chatWindow = document.querySelector('.chat-window');
+    if (chatWindow) {
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+  }
+
 
   const handleSendMessage = async (messageText) => {
     setIsButtonDisabled(true);
@@ -64,6 +76,7 @@ function Bot() {
       }
       setInput('');
       setIsButtonDisabled(false);
+
     }
   };
 
@@ -76,7 +89,7 @@ function Bot() {
   return (
     <div className="bot-page-container">
       <h1 className="bot-title">Chat with AgroBot</h1>
-      <center><img src={chatbot} alt="chat bot image" /></center>
+      <center><img src={chatbotImg} alt="chat bot image" /></center>
       <div className="chat-window">
         {messages.map((message, index) => (
           <div
