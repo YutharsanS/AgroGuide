@@ -1,7 +1,7 @@
 import './Footer.css';
 
-import facebook from '../assets/facebook_g.png';
-import youtube from '../assets/youtube_g.png';
+import facebook from '../assets/facebook-icon.png';
+import youtube from '../assets/youtube-icon.png';
 
 function Footer() {
     return (
@@ -35,8 +35,8 @@ function Footer() {
                 </div>
             </div>
             <div className="footer-bottom">
-                <p>&copy; 2024 Agriculture Guide. All Rights Reserved.</p>
-                <a href="#privacy-policy">Privacy Policy</a> | <a href="#terms">Terms of Service</a>
+                <p>&copy; 2024 AgroGuide. All Rights Reserved.</p>
+                <a href="/privacy-policy">Privacy Policy</a> | <a href="/terms">Terms of Service</a>
             </div>
         </footer>
     );
