@@ -22,12 +22,14 @@ function Bot() {
     // Check for plant data in local storage
     const plantData = localStorage.getItem('plantData');
     if (plantData) {
-      const userMessage = { sender: 'user', text: plantData };
+      const parsedPlantData = JSON.parse(plantData);
+      const plantContent = parsedPlantData[0]?.content || '';
+      const userMessage = { sender: 'user', text: plantContent };
       const updatedMessages = [...messages, userMessage];
       setMessages(updatedMessages);
 
       // Send plant data to bot
-      handleSendMessage(plantData);
+      handleSendMessage(plantContent);
 
       // Remove plant data from local storage
       localStorage.removeItem('plantData');
