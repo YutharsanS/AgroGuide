@@ -52,10 +52,10 @@ function Instruction() {
 
   const fetchImage = async (category) => {
     try {
-      const response = await axios.get(`https://pixabay.com/api/?key=46509145-b431f737a8d5f8c98a40dfb87&q=${category}&image_type=photo`);
-      // console.log(response.data.hits[0].largeImageURL);
-      if (response.data.hits[0].largeImageURL) {
-        setAPIImageSrc(response.data.hits[0].largeImageURL);
+      const response = await axios.post("http://localhost:8080/chatbot/pixabayAPI", {"message": category});
+      console.log(response.data);
+      if (response.data.imgurl) {
+        setAPIImageSrc(response.data.imgurl);
       }
     } catch (error) {
       console.error('Error fetching image:', error);
