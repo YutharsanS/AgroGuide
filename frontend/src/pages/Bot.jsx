@@ -18,14 +18,29 @@ function Bot() {
     if (savedMessages) {
       setMessages(JSON.parse(savedMessages));
     }
+
+    // Check for plant data in local storage
+    const plantData = localStorage.getItem('plantData');
+    if (plantData) {
+      const userMessage = { sender: 'user', text: plantData };
+      const updatedMessages = [...messages, userMessage];
+      setMessages(updatedMessages);
+
+      // Send plant data to bot
+      handleSendMessage(plantData);
+
+      // Remove plant data from local storage
+      localStorage.removeItem('plantData');
+    }
   }, []);
 
-  const handleSendMessage = async () => {
+  const handleSendMessage = async (messageText) => {
     setIsButtonDisabled(true);
     
-    if (input.trim()) {
+    const message = messageText || input;
+    if (message.trim()) {
       // Add user message to chat
-      const userMessage = { sender: 'user', text: input };
+      const userMessage = { sender: 'user', text: message };
       const updatedMessages = [...messages, userMessage];
       setMessages(updatedMessages);
 
@@ -56,47 +71,47 @@ function Bot() {
     // Clear messages from state and local storage
     setMessages([]);
     localStorage.removeItem('chatMessages');
-    };
-  
-    return (
-      <div className="bot-page-container">
-        <h1 className="bot-title">Chat with AgroBot</h1>
-        <center><img src={chatbot} alt="chat bot image" /></center>
-        <div className="chat-window">
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={`chat-message ${message.sender === 'bot' ? 'bot-message' : 'user-message'}`}
-            >
-              <ReactMarkdown>{message.text}</ReactMarkdown>
-            </div>
-          ))}
-        </div>
-  
-        <div className="chat-input-container">
-          <input
-            type="text"
-            className="chat-input"
-            placeholder="Type your message..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-          />
-          <button 
-            className="send-btn" 
-            onClick={handleSendMessage} 
-            disabled={isButtonDisabled}
+  };
+
+  return (
+    <div className="bot-page-container">
+      <h1 className="bot-title">Chat with AgroBot</h1>
+      <center><img src={chatbot} alt="chat bot image" /></center>
+      <div className="chat-window">
+        {messages.map((message, index) => (
+          <div
+            key={index}
+            className={`chat-message ${message.sender === 'bot' ? 'bot-message' : 'user-message'}`}
           >
-            Send
-          </button>
-          <button 
-            className="clear-btn" 
-            onClick={handleClearMessages}
-          >
-            Clear Messages
-          </button>
-        </div>
+            <ReactMarkdown>{message.text}</ReactMarkdown>
+          </div>
+        ))}
       </div>
-    );
-  }
+
+      <div className="chat-input-container">
+        <input
+          type="text"
+          className="chat-input"
+          placeholder="Type your message..."
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+        />
+        <button 
+          className="send-btn" 
+          onClick={() => handleSendMessage()} 
+          disabled={isButtonDisabled}
+        >
+          Send
+        </button>
+        <button 
+          className="clear-btn" 
+          onClick={handleClearMessages}
+        >
+          Clear Messages
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default Bot;
