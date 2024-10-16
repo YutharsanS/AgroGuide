@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from "axios";
 import ReactMarkdown from 'react-markdown';
+import TypewriterEffect from '../components/TypewriterEffect';
 
 import './Bot.css';
 import chatbotImg from '../assets/chatbot-page.jpg';
@@ -84,8 +85,8 @@ function Bot() {
 
   const handleClearMessages = () => {
     // Clear messages from state and local storage
-    setMessages([]);
     localStorage.removeItem('chatMessages');
+    setMessages([{ sender: 'bot', text: 'Hello! How can I help you with your farming concerns today?' }]);
   };
 
   return (
@@ -98,7 +99,7 @@ function Bot() {
             key={index}
             className={`chat-message ${message.sender === 'bot' ? 'bot-message' : 'user-message'}`}
           >
-            <ReactMarkdown>{message.text}</ReactMarkdown>
+            {(messages.length > 1) ? <ReactMarkdown>{message.text}</ReactMarkdown> :<TypewriterEffect text={message.text} speed={40} />}
           </div>
         ))}
       </div>

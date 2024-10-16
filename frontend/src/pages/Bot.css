@@ -22,7 +22,7 @@
   
   /* Chat window styles */
   .chat-window {
-    height: 400px;
+    height: 600px;
     overflow-y: auto;
     border: 1px solid #ddd;
     padding: 20px;
