@@ -41,18 +41,30 @@
         string replyDate;
     |};
 
-    // public type PostTest record {|
-    //     string userName;
-    //     string postMessage;
-    //     string postDate;
-    //     Reply[] replies;
-    // |};
+   
 
     public type pixabayResult record {|
         int total;
         int totalHits;
         json[] hits;
     |};
+
+        type QADocument record {|
+        string question;
+        string answer;
+        float[] embedding;
+    |};
+
+    type QAResult record {|
+        string question;
+        string answer;
+    |};
+
+    type CategoryDocument record {|
+        string category;
+        string content;
+    |};
+
 
     //core configure
     @http:ServiceConfig {
@@ -103,20 +115,6 @@
         resource function post getContent(http:Caller caller, http:Request req) returns error? {
             json payload = check req.getJsonPayload();
             string message = (check payload.message).toString();
-
-            // Execute the SQL query
-            // stream<record {|anydata...;|}, sql:Error?> resultStream = pool->query(`SELECT * FROM content`);
-            // json[] resultJson = [];
-
-            // // Process the result stream and build the JSON response
-            // check resultStream.forEach(function(record {|anydata...;|} row) {
-            //     map<json> rowJson = {};
-            //     foreach var [key, value] in row.entries() {
-            //         rowJson[key] = <json>value;
-            //     }
-            //     resultJson.push(rowJson);
-            // });
-            // json resultJson = check getContent(message);
 
             json result = check testVectorSearch(message);
             json resultJson = result;
@@ -211,7 +209,7 @@
         }
     }
 
-    // }
+ 
 
     // Function to call the Python chatbot
 
@@ -432,21 +430,6 @@
 
 
 
-    type QADocument record {|
-        string question;
-        string answer;
-        float[] embedding;
-    |};
-
-    type QAResult record {|
-        string question;
-        string answer;
-    |};
-
-    type CategoryDocument record {|
-        string category;
-        string content;
-    |};
 
 
 
@@ -475,29 +458,7 @@
 
         return results;
     }
-    // function addReplyToPost(mongodb:Collection collection, json postId, Reply newReply) returns boolean|error {
-    //     map<json> filter = { "_id": postId };
-
-    //     mongodb:Update updateDoc = {
-    //         set: {
-    //             "$push": {
-    //                 "replies": {
-    //                     "userName": newReply.userName,
-    //                     "replyMessage": newReply.replyMessage,
-    //                     "replyDate": newReply.replyDate
-    //                 }
-    //             }
-    //         }
-    //     };
-
-    //     mongodb:UpdateOptions options = {
-    //         upsert: true
-    //     };
-
-    //     mongodb:UpdateResult result = check collection->updateOne(filter, updateDoc, options);
-
-    //     return result.modifiedCount > 0;
-    // }
+   
 
     function addReplyToPost(mongodb:Collection collection, json postId, Reply newReply) returns boolean|error {
     // First, retrieve the current document
