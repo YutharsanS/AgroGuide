@@ -3,37 +3,38 @@
     import ballerinax/mongodb;
     import ballerina/lang.value;
     import ballerina/uuid;
-
     import ballerina/data.jsondata;
 
+type databaseConfig record {|
+    string connection_string;
+    string database;
+    string qa_collection_name;
+    string category_collection_name;
+    
+|};
 
-    // MongoDB Atlas configuration
-    configurable string connection_string = "mongodb+srv://yutharsan:0585@cluster0.z8x37.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-    configurable string database = "test";
-    configurable string qa_collection_name = "qa_documents";
-    configurable string category_collection_name = "category";
-
-    configurable string pixabay_api_key = "46509145-b431f737a8d5f8c98a40dfb87"; // Need to put this into .env
-
-    mongodb:Client mongoDb = check new ({
-        connection: connection_string
-    });
+type pixabyConfig record {|
+    string api_key;
+    
+|};
 
 
-    public type Post record {|
-        json _id;
-        string userName;
-        string postMessage;
-        string postDate;
-        Reply[] replies;
-    |};
+public type Post record {| 
+    json _id; 
+    string userName; 
+    string postMessage; 
+    string postDate; 
+    Reply[] replies; 
+|};
 
-    public type Post_i record {|
-        string userName;
-        string postMessage;
-        string postDate;
-        Reply[] replies;
-    |};
+public type Post_i record {| 
+    string userName; 
+    string postMessage; 
+    string postDate; 
+    Reply[] replies; 
+|};
+
+
 
     public type Reply record {|
         string userName;
@@ -65,6 +66,17 @@
         string content;
     |};
 
+
+ // MongoDB Atlas configuration
+configurable databaseConfig connection = ?;
+
+configurable pixabyConfig pixabay = ?;
+
+// Create a new MongoDB client
+
+mongodb:Client mongoDb = check new ({
+    connection: connection.connection_string
+});
 
     //core configure
     @http:ServiceConfig {
@@ -99,7 +111,7 @@
             io:println("Request " + category);
 
             http:Client pixabayClient = check new ("https://pixabay.com/api");
-            string endpoint = (string `/?key=${pixabay_api_key}&q=${category}&image_type=photo`);
+            string endpoint = (string `/?key=${pixabay.api_key}&q=${category}&image_type=photo`);
             http:Response response = check pixabayClient->get(endpoint);
             json responseJson = check response.getJsonPayload();
             pixabayResult responsePixabay = check jsondata:parseAsType(responseJson);
@@ -361,8 +373,8 @@
 
     function testCategorySearch(string userInput) returns json|error {
         // Access the database and collection using name
-        mongodb:Database qa_database = check mongoDb->getDatabase(database);
-        mongodb:Collection dataCollection = check qa_database->getCollection(category_collection_name);
+        mongodb:Database qa_database = check mongoDb->getDatabase(connection.database);
+        mongodb:Collection dataCollection = check qa_database->getCollection(connection.category_collection_name);
 
         // Test finding similar answers
         CategoryDocument[] similarDocs = check findCategory(userInput, qa_database, dataCollection);
@@ -377,8 +389,8 @@
     }
     function testVectorSearch(string userInput) returns json|error {
         // Access the database and collection using name
-        mongodb:Database qa_database = check mongoDb->getDatabase(database);
-        mongodb:Collection dataCollection = check qa_database->getCollection(qa_collection_name);
+        mongodb:Database qa_database = check mongoDb->getDatabase(connection.database);
+        mongodb:Collection dataCollection = check qa_database->getCollection(connection.qa_collection_name);
 
         // Test finding similar answers
         float[] queryEmbedding = check generateEmbedding(userInput);
