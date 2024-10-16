@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+
 import axios from 'axios';
 import './Instruction.css';
 import '../components/PlantList';
@@ -11,6 +13,7 @@ function Instruction() {
   const [plantData, setPlantData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [APIImageSrc, setAPIImageSrc] = useState('');
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
@@ -24,6 +27,7 @@ function Instruction() {
       });
       console.log(response.data);
       setPlantData(response.data);
+      fetchImage(response.data[0].category);
     } catch (err) {
       setError('Failed to fetch plant data.', err);
     }
@@ -41,6 +45,22 @@ function Instruction() {
     }
     
   };
+
+  const handleExplainByBot = () => {
+    localStorage.setItem('plantData', JSON.stringify(plantData));
+  };
+
+  const fetchImage = async (category) => {
+    try {
+      const response = await axios.post("http://localhost:8080/chatbot/pixabayAPI", {"message": category});
+      console.log(response.data);
+      if (response.data.imgurl) {
+        setAPIImageSrc(response.data.imgurl);
+      }
+    } catch (error) {
+      console.error('Error fetching image:', error);
+    }
+  }
 
   return (
     <div className="instruction-container">
@@ -63,11 +83,15 @@ function Instruction() {
 
       {error && <p className="error">{error}</p>}
 
+      {APIImageSrc && <center><img src={APIImageSrc} alt="API Image" className="plant-img"/></center>}
+
       {plantData && (
         <div className="plant-data">
           <PlantList plantData={plantData}/>
+          <Link to="/bot" className="explain-btn" onClick={handleExplainByBot}>Explain by Bot</Link>
         </div>
       )}
+      
     </div>
   );
 }

@@ -18,18 +18,43 @@ function Bot() {
     if (savedMessages) {
       setMessages(JSON.parse(savedMessages));
     }
+
+    // Check for plant data in local storage
+    const plantData = localStorage.getItem('plantData');
+    if (plantData) {
+      const parsedPlantData = JSON.parse(plantData);
+      const plantContent = parsedPlantData[0]?.content || '';
+      const userMessage = { sender: 'user', text: plantContent };
+      const updatedMessages = [...messages, userMessage];
+      setMessages(updatedMessages);
+
+      // Send plant data to bot
+      handleSendMessage(plantContent);
+
+      // Remove plant data from local storage
+      localStorage.removeItem('plantData');
+    }
   }, []);
 
   useEffect(() => {
     autoScrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = async () => {
-    setIsButtonDisabled(true);
+  const autoScrollToBottom = () => {
+    const chatWindow = document.querySelector('.chat-window');
+    if (chatWindow) {
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+  }
 
-    if (input.trim()) {
+
+  const handleSendMessage = async (messageText) => {
+    setIsButtonDisabled(true);
+    
+    const message = messageText || input;
+    if (message.trim()) {
       // Add user message to chat
-      const userMessage = { sender: 'user', text: input };
+      const userMessage = { sender: 'user', text: message };
       const updatedMessages = [...messages, userMessage];
       setMessages(updatedMessages);
 
@@ -63,13 +88,6 @@ function Bot() {
     localStorage.removeItem('chatMessages');
   };
 
-  const autoScrollToBottom = () => {
-    const chatWindow = document.querySelector('.chat-window');
-    if (chatWindow) {
-      chatWindow.scrollTop = chatWindow.scrollHeight;
-    }
-  }
-
   return (
     <div className="bot-page-container">
       <h1 className="bot-title">Chat with AgroBot</h1>
@@ -93,15 +111,15 @@ function Bot() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
         />
-        <button
-          className="send-btn"
-          onClick={handleSendMessage}
+        <button 
+          className="send-btn" 
+          onClick={() => handleSendMessage()} 
           disabled={isButtonDisabled}
         >
           Send
         </button>
-        <button
-          className="clear-btn"
+        <button 
+          className="clear-btn" 
           onClick={handleClearMessages}
         >
           Clear Messages
