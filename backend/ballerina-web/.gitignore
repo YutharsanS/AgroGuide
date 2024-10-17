@@ -10,5 +10,6 @@ generated/
 # See https://ballerina.io/learn/provide-values-to-configurable-variables/ for more details.
 Config.toml
 
-# Ignore environment configuration file
-bot/.env 
+
+# add .env file to gitignore
+bot/.env
