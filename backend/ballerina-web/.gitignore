@@ -12,5 +12,5 @@ Config.toml
 
 
 # add .env file to gitignore
-# Ignore environment configuration file
-../bot/.env
+*.env
+
