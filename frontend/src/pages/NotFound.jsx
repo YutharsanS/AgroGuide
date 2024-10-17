@@ -3,7 +3,7 @@ import './NotFound.css';
 import { Link } from 'react-router-dom';
 import notFoundImage from '../assets/not-found.png';
 
-const NotFound = () => {
+function NotFound() {
   return (
     <div className="not-found">
       <div className="not-found-content">
