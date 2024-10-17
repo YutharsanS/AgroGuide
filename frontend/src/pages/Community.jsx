@@ -12,11 +12,13 @@ function Community() {
   const [replyText, setReplyText] = useState('');  // State for the reply message
   const [replyingTo, setReplyingTo] = useState(null);  // Track which message we're replying to
 
+  const [visibleMessages, setVisibleMessages] = useState(5);
+
   const fetchMessages = async () => {
     try {
       const response = await axios.get('http://localhost:8080/chatbot/allposts'); // Replace with your backend endpoint
       console.log(response.data);
-      setMessages(response.data);
+      setMessages(response.data.reverse());
     } catch (error) {
       console.error('Error fetching messages:', error);
     }
@@ -72,6 +74,10 @@ function Community() {
     }
   };
 
+  const loadMoreMessages = () => {
+    setVisibleMessages((prevVisibleMessages) => prevVisibleMessages + 5);
+  }
+
   return (
     <div className="community-container">
       <h2 className="community-title">Community Forum</h2>
@@ -95,7 +101,7 @@ function Community() {
       </div>
 
       <div className="messages-section">
-        {messages.slice().reverse().map((msg, index) => (
+        {messages.slice(0, visibleMessages).map((msg, index) => (
           <div key={index} className="message-container">
             {/* {console.log(msg._id.$oid)} */}
             {/* <p>{msg._id?.$oid}</p> */}
@@ -149,6 +155,12 @@ function Community() {
           </div>
         ))}
       </div>
+
+      {/* Button to load more messages */}
+      {visibleMessages < messages.length && (
+        <button onClick={loadMoreMessages} className="load-more-btn">Load More</button>
+      )}
+
     </div>
   );
 }
