@@ -83,10 +83,13 @@ function Instruction() {
 
       {error && <p className="error">{error}</p>}
 
-      {APIImageSrc && <center><img src={APIImageSrc} alt="API Image" className="plant-img"/></center>}
+      {plantData && plantData.length > 0 && APIImageSrc && <center><img src={APIImageSrc} alt="API Image" className="plant-img"/></center>}
 
+      {/* {plantData && plantData.length === 0 && <p>No matching results found for: {plantName}</p>} */}
+      
       {plantData && (
         <div className="plant-data">
+          {plantData.length > 0 ? <p>Matching Results for: {plantName}</p> : null}
           <PlantList plantData={plantData}/>
           <Link to="/bot" className="explain-btn" onClick={handleExplainByBot}>Explain by Bot</Link>
         </div>
