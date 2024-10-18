@@ -53,6 +53,8 @@ function Community() {
         fetchMessages();
         setNewMessage('');
         setNewName('');
+        window.location.reload();
+        window.scrollTo(0, 20);
       } catch (error) {
         console.error('Error posting message:', error);
       }
