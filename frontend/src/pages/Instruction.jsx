@@ -29,7 +29,7 @@ function Instruction() {
   const fetchImage = async (category) => {
     try {
       const response = await axios.post("http://localhost:8080/chatbot/pixabayAPI", {"message": category});
-      console.log(response.data);
+      // console.log(response.data);
       if (response.data.imgurl) {
         setAPIImageSrc(response.data.imgurl);
       }

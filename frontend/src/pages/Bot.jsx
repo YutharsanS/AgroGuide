@@ -81,7 +81,7 @@ function Bot() {
         const response = await axios.post('http://localhost:8080/chatbot', {
           message: userMessage,
         });
-        console.log(response.data);
+        // console.log(response.data);
         const botMessage = { sender: 'bot', text: response.data };
         const finalMessages = [...updatedMessages, botMessage];
         setMessages(finalMessages);

@@ -1,5 +1,4 @@
-import './About.css'; // Assuming you'll add some styles for the About page
-
+import './About.css';
 import about from '../assets/about.png';
 
 /**
