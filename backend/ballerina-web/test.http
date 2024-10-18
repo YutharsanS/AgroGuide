@@ -44,3 +44,11 @@ POST http://localhost:8080/chatbot/getPosts
 Content-Type: application/json
 
 {}
+
+### Test the /getPosts endpoint
+POST http://localhost:8080/chatbot/getPosts
+Content-Type: application/json
+
+{
+  "request": "pepper"
+}
