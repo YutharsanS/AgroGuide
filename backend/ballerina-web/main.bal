@@ -165,7 +165,3 @@ service /chatbot on new http:Listener(8080) {
         check caller->respond(resultJson);
     }
 }
-
-// public function main() returns error? {
-//     check populateCommunityPosts(mongoDb);
-// }
