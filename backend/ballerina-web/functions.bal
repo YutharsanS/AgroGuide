@@ -71,11 +71,11 @@ function findSimilarPosts(float[] queryEmbedding, mongodb:Database database, mon
     map<json>[] pipeline = [
         {
             "$vectorSearch": {
-                "index": "vector_index",
+                "index": "posts_index",
                 "path": "embedding",
                 "queryVector": queryEmbedding,
                 "numCandidates": 4,
-                "limit": 3
+                "limit": 2
             }
         }
     ];
@@ -174,7 +174,7 @@ function testCategorySearch(string userInput) returns json|error {
 function testVectorSearch(string userInput) returns json|error {
     // Access the database and collection using name
     mongodb:Database qa_database = check mongoDb->getDatabase(connection.database);
-    mongodb:Collection dataCollection = check qa_database->getCollection("community_posts_temp");
+    mongodb:Collection dataCollection = check qa_database->getCollection(connection.posts);
 
     // Test finding similar answers
     float[] queryEmbedding = check generateEmbedding(userInput);
@@ -274,8 +274,8 @@ function addReplyToPost(mongodb:Collection collection, json postId, Reply newRep
 }
 
 public function populateCommunityPosts(mongodb:Client mongoClient) returns error? {
-    mongodb:Database qa_database = check mongoClient->getDatabase("test");
-    mongodb:Collection postCollection = check qa_database->getCollection("community_posts_temp");
+    mongodb:Database qa_database = check mongoClient->getDatabase(connection.database);
+    mongodb:Collection postCollection = check qa_database->getCollection(connection.posts);
 
     Post_i[] posts = [
         {
@@ -372,8 +372,334 @@ public function populateCommunityPosts(mongodb:Client mongoClient) returns error
                     replyDate: "2024-09-23T19:45:15Z"
                 }
             ]
-        }
-    ];
+        },
+        {
+        userName: "David",
+        postMessage: "What's the best fertilizer for growing organic tomatoes?",
+        postDate: "Thu Sep 19 2024 10:15:25 GMT+0530 (India Standard Time)",
+        replies: [
+            {
+                userName: "Emma",
+                replyMessage: "I recommend using compost or manure. It’s natural and provides all the nutrients.",
+                replyDate: "Thu Sep 19 2024 11:00:12 GMT+0530 (India Standard Time)"
+            },
+            {
+                userName: "Jack",
+                replyMessage: "I use a mix of fish emulsion and seaweed extract. Works great for my tomatoes!",
+                replyDate: "Fri Sep 20 2024 09:30:47 GMT+0530 (India Standard Time)"
+            },
+            {
+                userName: "Yutharsan",
+                replyMessage: "I don't know ",
+                replyDate: "Sat Oct 12 2024 11:00:12 GMT+0530 (Japan Standard Time)"
+            }
+    ]
+    },
+    {
+        userName: "Alice",
+        postMessage: "How often should I water my cucumber plants during summer?",
+        postDate: "Sat Sep 21 2024 14:32:19 GMT+0530 (India Standard Time)",
+        replies: [
+            {
+                userName: "Henry",
+                replyMessage: "In hot weather, cucumbers need water daily, but make sure the soil drains well.",
+                replyDate: "Sat Sep 21 2024 16:20:34 GMT+0530 (India Standard Time)"
+            },
+            {
+                userName: "Grace",
+                replyMessage: "I water mine every morning to keep them hydrated but avoid soggy soil.",
+                replyDate: "Sun Sep 22 2024 08:12:50 GMT+0530 (India Standard Time)"
+            },
+            {
+                userName: "Yutharsan",
+                replyMessage: "I don't know ",
+                replyDate: "Sat Oct 12 2024 11:00:12 GMT+0530 (Japan Standard Time)"
+            },
+            {
+                userName: "Yutharsan",
+                replyMessage: "I don't know ",
+                replyDate: "Sat Oct 12 2024 11:00:12 GMT+0530 (Japan Standard Time)"
+            },
+            {
+                userName: "Yutharsan",
+                replyMessage: "I don't know ",
+                replyDate: "Sat Oct 12 2024 11:00:12 GMT+0530 (Japan Standard Time)"
+            },
+            {
+                userName: "Yutharsan",
+                replyMessage: "I do know ",
+                replyDate: "Sat Oct 12 2024 11:00:12 GMT+0530 (Japan Standard Time)"
+            }
+        ]
+    },
+    {
+        userName: "Frank",
+        postMessage: "Any tips on preventing pests in my vegetable garden?",
+        postDate: "Wed Sep 25 2024 09:45:12 GMT+0530 (India Standard Time)",
+        replies: [
+            {
+                userName: "David",
+                replyMessage: "Try using neem oil or introducing beneficial insects like ladybugs.",
+                replyDate: "Wed Sep 25 2024 11:20:05 GMT+0530 (India Standard Time)"
+            },
+            {
+                userName: "Emma",
+                replyMessage: "I use companion planting. Basil near tomatoes helps deter pests.",
+                replyDate: "Wed Sep 25 2024 14:50:37 GMT+0530 (India Standard Time)"
+            }
+        ]
+    },
+    {
+        userName: "Grace",
+        postMessage: "What’s the best time of year to plant carrots?",
+        postDate: "Fri Sep 27 2024 12:10:55 GMT+0530 (India Standard Time)",
+        replies: [
+            {
+                userName: "Alice",
+                replyMessage: "I usually plant mine in early spring, and they grow well into fall.",
+                replyDate: "Fri Sep 27 2024 13:30:42 GMT+0530 (India Standard Time)"
+            },
+            {
+                userName: "Jack",
+                replyMessage: "Fall planting is great in cooler climates. The carrots will be sweeter.",
+                replyDate: "Sat Sep 28 2024 09:20:18 GMT+0530 (India Standard Time)"
+            },
+            {
+                userName: "a",
+                replyMessage: "b",
+                replyDate: "2024-10-12T19:17:04.854Z"
+            },
+            {
+                userName: "c",
+                replyMessage: "d",
+                replyDate: "2024-10-12T19:17:17.079Z"
+            }
+        ]
+    },
+    {
+        userName: "Alice",
+        postMessage: "How often should I water my cucumber plants during summer?",
+        postDate: "Sat Sep 21 2024 14:32:19 GMT+0530 (India Standard Time)",
+        replies: [
+            {
+                userName: "Henry",
+                replyMessage: "In hot weather, cucumbers need water daily, but make sure the soil drains well.",
+                replyDate: "Sat Sep 21 2024 16:20:34 GMT+0530 (India Standard Time)"
+            },
+            {
+                userName: "Grace",
+                replyMessage: "I water mine every morning to keep them hydrated but avoid soggy soil.",
+                replyDate: "Sun Sep 22 2024 08:12:50 GMT+0530 (India Standard Time)"
+            }
+        ]
+    },
+    {
+        userName: "Alice",
+        postMessage: "How often should I water my cucumber plants during summer?",
+        postDate: "Sat Sep 21 2024 14:32:19 GMT+0530 (India Standard Time)",
+        replies: [
+            {
+                userName: "Kavindu",
+                replyMessage: "Twice a week",
+                replyDate: "Sun Oct 13 2024 08:14:58 GMT+0530 (India Standard Time)"
+            },
+            {
+                userName: "Kavindu",
+                replyMessage: "Twice a week",
+                replyDate: "Sun Oct 13 2024 08:14:58 GMT+0530 (India Standard Time)"
+            }
+        ]
+    },
+    {
+        userName: "Kavindu",
+        postMessage: "Hello, I'm new here",
+        postDate: "Sun Oct 13 2024 08:14:58 GMT+0530 (India Standard Time)",
+        replies: []
+    },
+    {
+        userName: "Kevin",
+        postMessage: "Hello, is this an active platform.",
+        postDate: "Sun Oct 13 2024 09:17:31 GMT+0530 (India Standard Time)",
+        replies: [
+            {
+                userName: "Sanju",
+                replyMessage: "Of course, do you any problems?",
+                replyDate: "Sun Oct 13 2024 10:04:46 GMT+0530 (India Standard Time)"
+            }
+        ]
+    },
+    {
+        userName: "Naveen",
+        postMessage: "Hey, I'm goiing to start a farm, Do you guys have any suggestions?\n",
+        postDate: "Sun Oct 13 2024 09:19:09 GMT+0530 (India Standard Time)",
+        replies: []
+    },
+    {
+        userName: "Ravi",
+        postMessage: "Hey",
+        postDate: "Sun Oct 13 2024 09:25:45 GMT+0530 (India Standard Time)",
+        replies: []
+    },
+    {
+        userName: "Ravi",
+        postMessage: "Hey (2)",
+        postDate: "Sun Oct 13 2024 09:26:18 GMT+0530 (India Standard Time)",
+        replies: [
+            {
+                userName: "Rose",
+                replyMessage: "Hey (3)",
+                replyDate: "Sun Oct 13 2024 10:03:01 GMT+0530 (India Standard Time)"
+            },
+            {
+                userName: "Risini",
+                replyMessage: "Hey (4)",
+                replyDate: "Sun Oct 13 2024 10:04:15 GMT+0530 (India Standard Time)"
+            }
+        ]
+    },
+    {
+        userName: "Ravindu",
+        postMessage: "I'm going to start a carrot farm. Do you guys have any suggestions?",
+        postDate: "Sun Oct 13 2024 10:14:23 GMT+0530 (India Standard Time)",
+        replies: [
+            {
+                userName: "Akila",
+                replyMessage: "Yeah, I also have a carrot farm. I can give some suggestions.",
+                replyDate: "Sun Oct 13 2024 10:15:01 GMT+0530 (India Standard Time)"
+            }
+        ]
+    },
+    {
+        userName: "Naveen",
+        postMessage: "I need some assistance for start growing rice. ",
+        postDate: "Sun Oct 13 2024 12:05:29 GMT+0530 (India Standard Time)",
+        replies: [
+            {
+                userName: "Admin",
+                replyMessage: "Just go through our instruction page and get assistance from our chat bot. You can ask anything from him.",
+                replyDate: "Sun Oct 13 2024 12:06:55 GMT+0530 (India Standard Time)"
+            },
+            {
+                userName: "Naveen ",
+                replyMessage: "Thank you !",
+                replyDate: "Sun Oct 13 2024 20:41:37 GMT+0530 (India Standard Time)"
+            }
+        ]
+    },
+    {
+        userName: "Navindu",
+        postMessage: "Hello Everyone",
+        postDate: "Sun Oct 13 2024 19:43:37 GMT+0530 (India Standard Time)",
+        replies: [
+            {
+                userName: "Kamal",
+                replyMessage: "Hello Hello",
+                replyDate: "Sun Oct 13 2024 19:43:52 GMT+0530 (India Standard Time)"
+            }
+        ]
+    },
+    {
+        userName: "Waduge",
+        postMessage: "Does anyone has a corn field",
+        postDate: "Mon Oct 14 2024 15:35:04 GMT+0530 (India Standard Time)",
+        replies: [
+            {
+                userName: "Wolf",
+                replyMessage: "Yes, I have",
+                replyDate: "Mon Oct 14 2024 15:35:21 GMT+0530 (India Standard Time)"
+            },
+            {
+                userName: "Himala",
+                replyMessage: "I haven't seen corn in years",
+                replyDate: "Wed Oct 16 2024 17:15:54 GMT+0530 (India Standard Time)"
+            }
+        ]
+    },
+    {
+        userName: "naveen",
+        postMessage: "i want to know what is the best season to grow pepper in sri lanka.",
+        postDate: "Mon Oct 14 2024 15:46:25 GMT+0530 (India Standard Time)",
+        replies: [
+            {
+                userName: "sandaruwan",
+                replyMessage: "Maha Season (September to March)",
+                replyDate: "Mon Oct 14 2024 15:47:49 GMT+0530 (India Standard Time)"
+            }
+        ]
+    },
+    {
+        userName: "Himala",
+        postMessage: "Does anyone has experience with growing cabbage.",
+        postDate: "Mon Oct 14 2024 18:04:16 GMT+0530 (India Standard Time)",
+        replies: []
+    },
+    {
+        userName: "Himala",
+        postMessage: "Hello, I want help with growing Ambun banana.",
+        postDate: "Wed Oct 16 2024 14:31:46 GMT+0530 (India Standard Time)",
+        replies: [
+            {
+                userName: "Roy",
+                replyMessage: "Hey don't spam in this forum. Mentioning your problem once is enough. Someone will reply?",
+                replyDate: "Thu Oct 17 2024 10:12:34 GMT+0530 (India Standard Time)"
+            }
+        ]
+    },
+    {
+        userName: "Himala",
+        postMessage: "Hello, I want help with growing Ambun banana.",
+        postDate: "Wed Oct 16 2024 14:31:47 GMT+0530 (India Standard Time)",
+        replies: []
+    },
+    {
+        userName: "Himala",
+        postMessage: "Hello, I want help with growing Ambun banana.",
+        postDate: "Wed Oct 16 2024 14:31:47 GMT+0530 (India Standard Time)",
+        replies: []
+    },
+    {
+        userName: "Himala",
+        postMessage: "Hello, I want help with growing Ambun banana.",
+        postDate: "Wed Oct 16 2024 14:31:47 GMT+0530 (India Standard Time)",
+        replies: []
+    },
+    {
+        userName: "Himala",
+        postMessage: "Hello, I want help with growing Ambun banana.",
+        postDate: "Wed Oct 16 2024 14:31:47 GMT+0530 (India Standard Time)",
+        replies: []
+    },
+    {
+        userName: "Himala ",
+        postMessage: "Where is rice grown most?",
+        postDate: "Wed Oct 16 2024 17:15:19 GMT+0530 (India Standard Time)",
+        replies: [
+            {
+                userName: "Perera",
+                replyMessage: "You should ask that from the authorities.",
+                replyDate: "Fri Oct 18 2024 12:58:20 GMT+0530 (India Standard Time)"
+            }
+        ]
+    },
+    {
+        userName: "Perera",
+        postMessage: "Is there any mango farmer in Colombo?",
+        postDate: "Fri Oct 18 2024 12:56:15 GMT+0530 (India Standard Time)",
+        replies: [
+            {
+                userName: "Tejan",
+                replyMessage: "There aren't many. You should try asking local authorities there.",
+                replyDate: "Fri Oct 18 2024 14:14:01 GMT+0530 (India Standard Time)"
+            }
+        ]
+    },
+    {
+        userName: "Tejan",
+        postMessage: "How much tea does a average farmer produce a year?",
+        postDate: "Fri Oct 18 2024 14:13:12 GMT+0530 (India Standard Time)",
+        replies: []
+    }
+];
 
     foreach var post in posts {
         map<anydata> documentToInsert = {

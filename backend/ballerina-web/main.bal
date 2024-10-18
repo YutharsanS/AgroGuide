@@ -153,7 +153,7 @@ service /chatbot on new http:Listener(8080) {
         check caller->respond(response);
     }
 
-    // Resource function to handle POST requests to the /getPosts endpoint
+    // Resource function to handle POST requests to the /getContent endpoint
     resource function post getPosts(http:Caller caller, http:Request req) returns error? {
         json payload = check req.getJsonPayload();
         string message = (check payload.request).toString();
@@ -165,3 +165,7 @@ service /chatbot on new http:Listener(8080) {
         check caller->respond(resultJson);
     }
 }
+
+// public function main() returns error? {
+//     check populateCommunityPosts(mongoDb);
+// }
