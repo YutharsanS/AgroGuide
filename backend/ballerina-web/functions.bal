@@ -66,32 +66,32 @@ function generateEmbedding(string text) returns float[]|error {
     return embedding;
 }
 
-function findSimilarAnswers(float[] queryEmbedding, mongodb:Database database, mongodb:Collection dataCollection) returns QAResult[]|error {
+function findSimilarPosts(float[] queryEmbedding, mongodb:Database database, mongodb:Collection dataCollection) returns Post[]|error {
     // Mongo db query
     map<json>[] pipeline = [
         {
             "$vectorSearch": {
-                "index": "index1",
+                "index": "vector_index",
                 "path": "embedding",
                 "queryVector": queryEmbedding,
-                "numCandidates": 3,
-                "limit": 1
+                "numCandidates": 4,
+                "limit": 3
             }
         }
     ];
 
     // The aggregate method return a stream containg results
-    stream<QAResult, error?> resultStream = check dataCollection->aggregate(pipeline);
+    stream<Post, error?> resultStream = check dataCollection->aggregate(pipeline);
 
-    QAResult[] results = [];
+    Post[] results = [];
 
     error? e = resultStream.forEach(function(json doc) {
         do {
-            // Access the 'question' and 'answer' fields from the JSON document
-            string question = check value:ensureType(doc.question, string);
-            string answer = check value:ensureType(doc.answer, string);
-
-            QAResult qaResult = {question: question, answer: answer};
+            string userName = check value:ensureType(doc.userName, string);
+            string answer = check value:ensureType(doc.postMessage, string);
+            string postDate = check value:ensureType(doc.postDate, string);
+            Reply[] replies = check getReplies(doc.replies);
+            Post qaResult = { _id:check doc._id, userName:userName, postMessage:answer, postDate:postDate, replies:replies};
             results.push(qaResult);
         } on fail var err {
             io:println("Error processing document: ", err.message());
@@ -118,8 +118,8 @@ function findCategory(string userInput, mongodb:Database datstringabase, mongodb
                     "query": userInput, // The search term (with potential typos).
                     "path": "category", // The field to search within.
                     "fuzzy": {
-                        "maxEdits": 1, // Allow up to 2 edits (insertions, deletions, or substitutions).
-                        "prefixLength": 3 // The number of initial characters that must match exactly.
+                        "maxEdits": 1, // Allow up to 1 edits (insertions, deletions, or substitutions).
+                        "prefixLength": 2 // The number of initial characters that must match exactly.
                     }
                 }
             }
@@ -174,11 +174,11 @@ function testCategorySearch(string userInput) returns json|error {
 function testVectorSearch(string userInput) returns json|error {
     // Access the database and collection using name
     mongodb:Database qa_database = check mongoDb->getDatabase(connection.database);
-    mongodb:Collection dataCollection = check qa_database->getCollection(connection.qa_collection_name);
+    mongodb:Collection dataCollection = check qa_database->getCollection("community_posts_temp");
 
     // Test finding similar answers
     float[] queryEmbedding = check generateEmbedding(userInput);
-    QAResult[] similarAnswers = check findSimilarAnswers(queryEmbedding, qa_database, dataCollection);
+    Post[] similarAnswers = check findSimilarPosts(queryEmbedding, qa_database, dataCollection);
 
     // Convert the similarAnswers array to JSON
     json similarAnswersJson = value:toJson(similarAnswers);
@@ -202,8 +202,6 @@ function getPosts(mongodb:Collection postCollection) returns Post[]|error {
             string answer = check value:ensureType(doc.postMessage, string);
             string postDate = check value:ensureType(doc.postDate, string);
             Reply[] replies = check getReplies(doc.replies);
-
-            // Check if 'replies' field exists and is of type json[]
 
             Post result = {_id: check doc._id, userName: userName, postMessage: answer, postDate: postDate, replies: replies};
             io:println("result: ", result);
@@ -273,4 +271,122 @@ function addReplyToPost(mongodb:Collection collection, json postId, Reply newRep
 
     return result.modifiedCount > 0 || result.upsertedId != ();
 
+}
+
+public function populateCommunityPosts(mongodb:Client mongoClient) returns error? {
+    mongodb:Database qa_database = check mongoClient->getDatabase("test");
+    mongodb:Collection postCollection = check qa_database->getCollection("community_posts_temp");
+
+    Post_i[] posts = [
+        {
+            userName: "David",
+            postMessage: "What's the best fertilizer for growing organic tomatoes?",
+            postDate: "2024-09-19T10:15:25Z",
+            replies: [
+                {
+                    userName: "Emily",
+                    replyMessage: "I've had great success with composted manure for my organic tomatoes.",
+                    replyDate: "2024-09-19T11:30:15Z"
+                },
+                {
+                    userName: "Michael",
+                    replyMessage: "Fish emulsion is another excellent organic fertilizer for tomatoes.",
+                    replyDate: "2024-09-19T12:45:30Z"
+                },
+                {
+                    userName: "Sarah",
+                    replyMessage: "Don't forget about compost tea! It's easy to make and very effective.",
+                    replyDate: "2024-09-19T14:20:45Z"
+                }
+            ]
+        },
+        {
+            userName: "Alex",
+            postMessage: "How often should I water my cucumber plants?",
+            postDate: "2024-09-20T09:30:00Z",
+            replies: [
+                {
+                    userName: "Linda",
+                    replyMessage: "Cucumbers need consistent moisture. Water deeply 1-2 times a week.",
+                    replyDate: "2024-09-20T10:15:20Z"
+                },
+                {
+                    userName: "John",
+                    replyMessage: "I use mulch to help retain moisture and reduce watering frequency.",
+                    replyDate: "2024-09-20T11:45:10Z"
+                }
+            ]
+        },
+        {
+            userName: "Sophia",
+            postMessage: "What are some good companion plants for peppers?",
+            postDate: "2024-09-21T14:20:30Z",
+            replies: [
+                {
+                    userName: "Oliver",
+                    replyMessage: "Basil is a great companion for peppers. It repels pests and enhances flavor.",
+                    replyDate: "2024-09-21T15:10:45Z"
+                },
+                {
+                    userName: "Emma",
+                    replyMessage: "I've had success planting onions and carrots near my peppers.",
+                    replyDate: "2024-09-21T16:30:20Z"
+                }
+            ]
+        },
+        {
+            userName: "Daniel",
+            postMessage: "My lettuce leaves are turning brown at the edges. What could be causing this?",
+            postDate: "2024-09-22T11:05:15Z",
+            replies: [
+                {
+                    userName: "Ava",
+                    replyMessage: "It might be tip burn. Check if you're overwatering or if there's a calcium deficiency.",
+                    replyDate: "2024-09-22T11:45:30Z"
+                },
+                {
+                    userName: "Liam",
+                    replyMessage: "Heat stress can also cause brown edges. Make sure they're getting some shade in hot weather.",
+                    replyDate: "2024-09-22T13:20:10Z"
+                }
+            ]
+        },
+        {
+            userName: "Mia",
+            postMessage: "What's the best way to control aphids on my rose bushes without using chemical pesticides?",
+            postDate: "2024-09-23T16:40:00Z",
+            replies: [
+                {
+                    userName: "Noah",
+                    replyMessage: "Ladybugs are natural predators of aphids. You can introduce them to your garden.",
+                    replyDate: "2024-09-23T17:15:25Z"
+                },
+                {
+                    userName: "Isabella",
+                    replyMessage: "A strong spray of water can knock aphids off. Repeat every few days.",
+                    replyDate: "2024-09-23T18:30:40Z"
+                },
+                {
+                    userName: "Ethan",
+                    replyMessage: "Neem oil is an effective organic treatment for aphids.",
+                    replyDate: "2024-09-23T19:45:15Z"
+                }
+            ]
+        }
+    ];
+
+    foreach var post in posts {
+        map<anydata> documentToInsert = {
+            "userName": post.userName,
+            "postMessage": post.postMessage,
+            "postDate": post.postDate,
+            "replies": post.replies,
+            "embedding": check generateEmbedding(post.postMessage)
+        };
+
+        _ = check postCollection->insertOne(documentToInsert);
+        io:println("Inserted post: " + post.postMessage);
+    }
+
+    io:println("Population of community posts completed successfully.");
 }

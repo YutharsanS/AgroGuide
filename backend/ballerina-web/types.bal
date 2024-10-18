@@ -54,4 +54,3 @@ type CategoryDocument record {|
     string category;
     string content;
 |};
-

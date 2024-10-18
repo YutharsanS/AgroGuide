@@ -152,5 +152,16 @@ service /chatbot on new http:Listener(8080) {
         // Send the response back to the client
         check caller->respond(response);
     }
-}
 
+    // Resource function to handle POST requests to the /getPosts endpoint
+    resource function post getPosts(http:Caller caller, http:Request req) returns error? {
+        json payload = check req.getJsonPayload();
+        string message = (check payload.request).toString();
+
+        json result = check testVectorSearch(message);
+        json resultJson = result;
+
+        // Send the result back to the client
+        check caller->respond(resultJson);
+    }
+}
