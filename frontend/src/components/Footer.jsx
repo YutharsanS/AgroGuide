@@ -28,7 +28,7 @@ function Footer() {
                 </div>
                 <div className="footer-section contact">
                     <h2>Contact Us</h2>
-                    <p>Email: support@agricultureguide.com</p>
+                    <p>Email: tcoders508@gmail.com</p>
                     <p>Phone: +123 456 7890</p>
                     <p>Address: 123 Green Road, Farmville, USA</p>
                 </div>

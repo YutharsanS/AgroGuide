@@ -64,7 +64,7 @@ function PrivacyPolicy() {
             <h2>8. Contact Us</h2>
             <p>If you have any questions about this Privacy Policy, please contact us:</p>
             <ul>
-                <li>By email: support@agrobot.com</li>
+                <li>By email: tcoders508@gmail.com</li>
                 <li>By phone number: +1-234-567-890</li>
             </ul>
 
