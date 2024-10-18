@@ -77,6 +77,12 @@ function findSimilarPosts(float[] queryEmbedding, mongodb:Database database, mon
                 "numCandidates": 4,
                 "limit": 2
             }
+        },
+        {
+            "$addFields": {"score": {"$meta": "vectorSearchScore"}}
+        },
+        {
+            "$match": {"score": {"$gte": 0.7}}
         }
     ];
 
