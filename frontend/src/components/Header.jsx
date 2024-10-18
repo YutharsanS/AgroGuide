@@ -3,21 +3,22 @@ import { Link } from 'react-router-dom';
 import './Header.css';
 import logo from '../assets/logo.jpg';
 
-/**
-     * Toggles the menu open and closed by updating the state.
-     */
-const toggleMenu = () => {
-  setIsMenuOpen(!isMenuOpen);
-};
 
 /**
  * Header component that includes the website's logo, title, and navigation menu.
  * 
  * @returns {JSX.Element} The header element containing the logo, title, and navigation links.
- */
+*/
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  
+  /**
+       * Toggles the menu open and closed by updating the state.
+       */
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+  
   return (
     <header className="header">
       <div className="header-container">
