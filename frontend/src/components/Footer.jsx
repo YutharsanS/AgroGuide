@@ -3,6 +3,11 @@ import './Footer.css';
 import facebook from '../assets/facebook-icon.png';
 import youtube from '../assets/youtube-icon.png';
 
+/**
+ * Renders the footer section of the web page. 
+ * It includes sections for about, quick links, contact, and social media.
+ * @returns {JSX.Element} A JSX element representing the footer.
+ */
 function Footer() {
     return (
         <footer className="footer">
@@ -19,7 +24,6 @@ function Footer() {
                         <li><a href="/bot">AgroBot</a></li>
                         <li><a href="/community">Community</a></li>
                         <li><a href="/about">About Us</a></li>
-                        {/* <li><a href="/contact">Contact</a></li> */}
                     </ul>
                 </div>
                 <div className="footer-section contact">

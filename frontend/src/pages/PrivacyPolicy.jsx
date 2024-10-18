@@ -1,6 +1,13 @@
 import React from 'react';
 import './PrivacyPolicy.css';
 
+/**
+ * Displays the privacy policy of the AgroBot website.
+ * This function renders the privacy policy content including sections 
+ * on information collection, usage, sharing, security, and data protection rights.
+ * 
+ * @returns A React component with the privacy policy content.
+ */
 function PrivacyPolicy() {
     return (
         <div className="privacy-policy-container">

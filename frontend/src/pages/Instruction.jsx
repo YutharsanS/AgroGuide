@@ -3,11 +3,15 @@ import { Link } from 'react-router-dom';
 
 import axios from 'axios';
 import './Instruction.css';
-import '../components/PlantList';
 import PlantList from '../components/PlantList';
 
 import instructionImg from '../assets/instruction-page.png';
 
+/**
+ * The Instruction function is a React component that allows users to
+ * input a plant name and retrieve instructions on how to grow the plant.
+ * It handles data fetching, error handling, and displays the plant data.
+ */
 function Instruction() {
   const [plantName, setPlantName] = useState('');
   const [plantData, setPlantData] = useState(null);
@@ -16,40 +20,12 @@ function Instruction() {
   const [APIImageSrc, setAPIImageSrc] = useState('');
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-
-  const fetchPlantData = async () => {
-    setLoading(true);
-    setError('');
-    setIsButtonDisabled(true);
-    try {
-      const response = await axios.post("http://localhost:8080/chatbot/getInstruction", {
-        message : plantName,
-      });
-      console.log(response.data);
-      setPlantData(response.data);
-      fetchImage(response.data[0].category);
-    } catch (err) {
-      setError('Failed to fetch plant data.', err);
-    }
-    setLoading(false);
-    setIsButtonDisabled(false);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    if (plantName.trim()) {
-      fetchPlantData();
-    } else {
-      setError('Please enter a valid plant name.');
-    }
-    
-  };
-
-  const handleExplainByBot = () => {
-    localStorage.setItem('plantData', JSON.stringify(plantData));
-  };
-
+  
+  /**
+   * Fetches an image of the plant category from an external API.
+   * @param {string} category - The category of the plant.
+   * @returns {void}
+   */
   const fetchImage = async (category) => {
     try {
       const response = await axios.post("http://localhost:8080/chatbot/pixabayAPI", {"message": category});
@@ -61,6 +37,52 @@ function Instruction() {
       console.error('Error fetching image:', error);
     }
   }
+  
+  /**
+   * Fetches plant data from the server based on the plant name.
+   * @returns {void}
+   */
+  const fetchPlantData = async () => {
+    setLoading(true);
+    setError('');
+    setIsButtonDisabled(true);
+    try {
+      const response = await axios.post("http://localhost:8080/chatbot/getInstruction", {
+        message : plantName,
+      });
+      setPlantData(response.data);
+      fetchImage(response.data[0].category);
+    } catch (err) {
+      setError('Failed to fetch plant data.', err);
+    }
+    setLoading(false);
+    setIsButtonDisabled(false);
+  };
+
+  /**
+   * Handles the form submission event.
+   * @param {Event} e - The form submission event.
+   * @returns {void}
+   */
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    if (plantName.trim()) {
+      fetchPlantData();
+    } else {
+      setError('Please enter a valid plant name.');
+    }
+    
+  };
+
+  /**
+   * Stores the fetched plant data in local storage to be used by the bot.
+   * @returns {void}
+   */
+  const handleExplainByBot = () => {
+    localStorage.setItem('plantData', JSON.stringify(plantData));
+  };
+
 
   return (
     <div className="instruction-container">
@@ -83,9 +105,7 @@ function Instruction() {
 
       {error && <p className="error">{error}</p>}
 
-      {plantData && plantData.length > 0 && APIImageSrc && <center><img src={APIImageSrc} alt="API Image" className="plant-img"/></center>}
-
-      {/* {plantData && plantData.length === 0 && <p>No matching results found for: {plantName}</p>} */}
+      {plantData && plantData.length > 0 && APIImageSrc && <center><img src={APIImageSrc} alt="API" className="plant-img"/></center>}
       
       {plantData && (
         <div className="plant-data">

@@ -3,6 +3,11 @@ import axios from 'axios';
 import './Community.css';
 import communityImg from '../assets/community-page.jpg';
 
+/**
+ * The Community function is a React component that renders a community forum
+ * where users can post messages and replies. It manages the state for messages,
+ * new messages, replies, and visibility of messages.
+ */
 function Community() {
   const [messages, setMessages] = useState([]);
 
@@ -14,10 +19,12 @@ function Community() {
 
   const [visibleMessages, setVisibleMessages] = useState(5);
 
+  /**
+   * Fetches messages from the server and updates the state with the fetched messages.
+   */
   const fetchMessages = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/chatbot/allposts'); // Replace with your backend endpoint
-      console.log(response.data);
+      const response = await axios.get('http://localhost:8080/chatbot/allposts');
       setMessages(response.data.reverse());
     } catch (error) {
       console.error('Error fetching messages:', error);
@@ -29,11 +36,12 @@ function Community() {
     fetchMessages();
   }, []);
   
-  
+  /**
+   * Posts a new message to the server and updates the state to reflect the changes.
+   */
   const handlePostMessage = async () => {
     if (newName.trim() && newMessage.trim()) {
       const newMessageObj = {
-        // id: messages.length + 1,
         userName: newName,
         postMessage: newMessage,
         postDate: new Date().toString(),
@@ -41,8 +49,7 @@ function Community() {
       };
 
       try {
-        const response = await axios.post('http://localhost:8080/chatbot/postMessage', newMessageObj); // Replace with your backend endpoint
-        // setMessages([...messages]);
+        await axios.post('http://localhost:8080/chatbot/postMessage', newMessageObj);
         fetchMessages();
         setNewMessage('');
         setNewName('');
@@ -53,6 +60,11 @@ function Community() {
     console.log(new Date().toString());
   };
 
+  /**
+   * Posts a reply to a specific message on the server and updates the state.
+   *
+   * @param {string} msgId - The ID of the message being replied to.
+   */
   const handleReply = async (msgId) => {
     if (replyName.trim() && replyText.trim()) {
       const newReply = {
@@ -63,7 +75,7 @@ function Community() {
       };
 
       try {
-        const response = await axios.post(`http://localhost:8080/chatbot/addReply`, newReply); // Replace with your backend endpoint
+        const response = await axios.post("http://localhost:8080/chatbot/addReply", newReply);
         fetchMessages(); // Refresh messages after posting a reply
         setReplyText('');  // Reset reply text after submission
         setReplyName('');
@@ -74,6 +86,9 @@ function Community() {
     }
   };
 
+  /**
+   * Increases the number of visible messages by a fixed number.
+   */
   const loadMoreMessages = () => {
     setVisibleMessages((prevVisibleMessages) => prevVisibleMessages + 5);
   }
@@ -81,7 +96,8 @@ function Community() {
   return (
     <div className="community-container">
       <h2 className="community-title">Community Forum</h2>
-      <center><img src={communityImg} alt="community image" /></center>
+      <center><img src={communityImg} alt="community" /></center>
+      
       {/* Form to post a new message */}
       <div className="post-message-form">
         <input
@@ -103,8 +119,6 @@ function Community() {
       <div className="messages-section">
         {messages.slice(0, visibleMessages).map((msg, index) => (
           <div key={index} className="message-container">
-            {/* {console.log(msg._id.$oid)} */}
-            {/* <p>{msg._id?.$oid}</p> */}
             <p className="message-date">{new Date(msg.postDate).toLocaleString()}</p>
             <p className="message-name">{msg.userName}:</p>
             <p className="message-text">{msg.postMessage}</p>
@@ -122,7 +136,7 @@ function Community() {
               {/* Button to reply to a message */}
               <button 
                 className="reply-btn" 
-                onClick={() => setReplyingTo(msg._id.$oid)}  // Set the message we are replying to
+                onClick={() => setReplyingTo(msg._id.$oid)}
               >
                 Reply
               </button>
@@ -145,7 +159,7 @@ function Community() {
                   />
                   <button
                     className="post-btn"
-                    onClick={() => handleReply(msg._id.$oid)}  // Post the reply to this specific message
+                    onClick={() => handleReply(msg._id.$oid)} 
                   >
                     Post Reply
                   </button>

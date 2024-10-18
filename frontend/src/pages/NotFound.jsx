@@ -3,6 +3,13 @@ import './NotFound.css';
 import { Link } from 'react-router-dom';
 import notFoundImage from '../assets/not-found.png';
 
+/**
+ * Represents a 404 Not Found page component.
+ * This component displays a message indicating that the requested page is not found.
+ * It provides a link to navigate back to the homepage.
+ * 
+ * @returns {JSX.Element} A JSX element representing the not found page.
+ */
 function NotFound() {
   return (
     <div className="not-found">

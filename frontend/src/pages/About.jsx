@@ -2,6 +2,11 @@ import './About.css'; // Assuming you'll add some styles for the About page
 
 import about from '../assets/about.png';
 
+/**
+ * A functional component that returns the JSX for the About section.
+ * 
+ * @returns {JSX.Element} The JSX element representing the About section.
+ */
 const About = () => {
   return (
     <div className="about-container">
@@ -15,7 +20,7 @@ const About = () => {
         <section className="mission-section">
           <h2>Our Mission</h2>
           <p>
-            At AgroGuide, our mission is to empower farmers by providing them with easy access to accurate, timely, and effective agricultural knowledge. 
+            At AgroGuide, our mission is to empower farmers by providing them with easy access to accurate, timely, and effective agricultural knowledge.
             We believe in blending traditional farming techniques with cutting-edge technology to help farmers enhance productivity, sustainability, and profitability.
           </p>
         </section>
@@ -23,7 +28,7 @@ const About = () => {
         <section className="services-section">
           <h2>What We Offer</h2>
           <p>
-            We offer a comprehensive platform where farmers can find detailed instructions about planting, growing, and managing various crops. 
+            We offer a comprehensive platform where farmers can find detailed instructions about planting, growing, and managing various crops.
             Our easy-to-use interface, combined with a powerful chatbot assistant, ensures that farmers receive the right information when they need it.
           </p>
           <ul>
@@ -36,7 +41,7 @@ const About = () => {
         <section className="vision-section">
           <h2>Our Vision for the Future</h2>
           <p>
-            We envision a future where every farmer, regardless of their location or background, has access to the latest agricultural advancements and community support. 
+            We envision a future where every farmer, regardless of their location or background, has access to the latest agricultural advancements and community support.
             Our goal is to create a more sustainable, innovative, and prosperous agricultural ecosystem where technology and nature work together for the betterment of all.
           </p>
         </section>
@@ -52,7 +57,7 @@ const About = () => {
         <section className="commitment-section">
           <h2>Our Commitment to You</h2>
           <p>
-            We are committed to providing high-quality, reliable information that supports farmers in making informed decisions. Whether you are a small-scale farmer or managing large fields, we are here to help you grow and succeed. 
+            We are committed to providing high-quality, reliable information that supports farmers in making informed decisions. Whether you are a small-scale farmer or managing large fields, we are here to help you grow and succeed.
             Together, we can cultivate a brighter future for agriculture.
           </p>
         </section>

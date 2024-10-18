@@ -1,5 +1,12 @@
 import { useState, useEffect } from 'react';
 
+/**
+ * Function to create a typewriter effect for displaying text.
+ * @param {Object} props - The properties for the typewriter effect.
+ * @param {string} props.text - The text to display in typewriter effect.
+ * @param {number} props.speed - The speed at which each character is displayed.
+ * @returns {JSX.Element} A React component that shows the typewriter effect.
+ */
 function TypewriterEffect({ text, speed }) {
   const [displayedText, setDisplayedText] = useState('');
   const [index, setIndex] = useState(0);
@@ -12,6 +19,7 @@ function TypewriterEffect({ text, speed }) {
       }, speed);
       return () => clearTimeout(timeout);
     }
+    return null;
   }, [index, text, speed]);
 
   return <div>{displayedText}</div>;

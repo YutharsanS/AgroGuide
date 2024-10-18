@@ -1,6 +1,11 @@
 import React from 'react';
 import './Terms.css';
 
+/**
+ * Renders the Terms of Service page content.
+ * 
+ * @returns {JSX.Element} The JSX element containing the terms and conditions information.
+ */
 function Terms() {
     return (
         <div className="terms-container">

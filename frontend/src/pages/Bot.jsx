@@ -6,6 +6,12 @@ import TypewriterEffect from '../components/TypewriterEffect';
 import './Bot.css';
 import chatbotImg from '../assets/chatbot-page.jpg';
 
+/**
+ * Represents a chat bot component that handles user interactions and messages.
+ * Provides functionality to send and receive messages, and store them in local storage.
+ * @function Bot
+ * @returns {JSX.Element} The rendered chat bot component.
+ */
 function Bot() {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [messages, setMessages] = useState([
@@ -41,6 +47,10 @@ function Bot() {
     autoScrollToBottom();
   }, [messages]);
 
+  /**
+   * Automatically scrolls the chat window to the bottom.
+   * @function autoScrollToBottom
+   */
   const autoScrollToBottom = () => {
     const chatWindow = document.querySelector('.chat-window');
     if (chatWindow) {
@@ -48,10 +58,14 @@ function Bot() {
     }
   }
 
-
+  /**
+   * Handles sending a message to the chat bot.
+   * @function handleSendMessage
+   * @param {string} messageText - The text of the message to send.
+   */
   const handleSendMessage = async (messageText) => {
     setIsButtonDisabled(true);
-    
+
     const message = messageText || input;
     if (message.trim()) {
       // Add user message to chat
@@ -83,8 +97,11 @@ function Bot() {
     }
   };
 
+  /**
+   * Clears all messages from the chat and local storage.
+   * @function handleClearMessages
+   */
   const handleClearMessages = () => {
-    // Clear messages from state and local storage
     localStorage.removeItem('chatMessages');
     setMessages([{ sender: 'bot', text: 'Hello! How can I help you with your farming concerns today?' }]);
   };
@@ -92,14 +109,14 @@ function Bot() {
   return (
     <div className="bot-page-container">
       <h1 className="bot-title">Chat with AgroBot</h1>
-      <center><img src={chatbotImg} alt="chat bot image" /></center>
+      <center><img src={chatbotImg} alt="chat bot" /></center>
       <div className="chat-window">
         {messages.map((message, index) => (
           <div
             key={index}
             className={`chat-message ${message.sender === 'bot' ? 'bot-message' : 'user-message'}`}
           >
-            {(messages.length > 1) ? <ReactMarkdown>{message.text}</ReactMarkdown> :<TypewriterEffect text={message.text} speed={40} />}
+            {(messages.length > 1) ? <ReactMarkdown>{message.text}</ReactMarkdown> : <TypewriterEffect text={message.text} speed={40} />}
           </div>
         ))}
       </div>
@@ -112,15 +129,15 @@ function Bot() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
         />
-        <button 
-          className="send-btn" 
-          onClick={() => handleSendMessage()} 
+        <button
+          className="send-btn"
+          onClick={() => handleSendMessage()}
           disabled={isButtonDisabled}
         >
           Send
         </button>
-        <button 
-          className="clear-btn" 
+        <button
+          className="clear-btn"
           onClick={handleClearMessages}
         >
           Clear Messages

@@ -6,6 +6,14 @@ import chatbotImage from "../assets/chatbot.jpg"
 import communityImage from "../assets/community.jpg"
 import instructionsImage from "../assets/instruction.jpg"
 
+/**
+ * Renders the Home component, which includes multiple sections such as hero,
+ * personalized farming instructions, community, and chatbot features for a 
+ * farming application. Each section includes descriptive text and links to 
+ * other parts of the application.
+ *
+ * @returns {JSX.Element} The JSX code for the Home component.
+ */
 export default function Home() {
     return (
         <div className="Home-page">
