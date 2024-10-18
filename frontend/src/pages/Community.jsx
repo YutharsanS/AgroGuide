@@ -10,14 +10,13 @@ import communityImg from '../assets/community-page.jpg';
  */
 function Community() {
   const [messages, setMessages] = useState([]);
-
   const [newMessage, setNewMessage] = useState('');
   const [newName, setNewName] = useState('');
   const [replyName, setReplyName] = useState('');  // State for the reply name
   const [replyText, setReplyText] = useState('');  // State for the reply message
   const [replyingTo, setReplyingTo] = useState(null);  // Track which message we're replying to
-
   const [visibleMessages, setVisibleMessages] = useState(5);
+  const [searchQuery, setSearchQuery] = useState('');  // State for the search query
 
   /**
    * Fetches messages from the server and updates the state with the fetched messages.
@@ -30,12 +29,12 @@ function Community() {
       console.error('Error fetching messages:', error);
     }
   };
-  
+
   // Fetch all the posts from backend
   useEffect(() => {
     fetchMessages();
   }, []);
-  
+
   /**
    * Posts a new message to the server and updates the state to reflect the changes.
    */
@@ -89,6 +88,22 @@ function Community() {
   };
 
   /**
+   * Searches for posts based on the search query and updates the state with the results.
+   */
+  const handleSearch = async () => {
+    if (searchQuery.trim()) {
+      try {
+        const response = await axios.post('http://localhost:8080/chatbot/getPosts', {
+          request: searchQuery
+        });
+        setMessages(response.data.reverse());
+      } catch (error) {
+        console.error('Error searching posts:', error);
+      }
+    }
+  };
+
+  /**
    * Increases the number of visible messages by a fixed number.
    */
   const loadMoreMessages = () => {
@@ -116,6 +131,18 @@ function Community() {
           className="textarea-field"
         />
         <button onClick={handlePostMessage} className="post-btn">Post Message</button>
+      </div>
+
+      {/* Search bar to search for posts */}
+      <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Search posts..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="input-field"
+        />
+        <button onClick={handleSearch} className="search-btn">Search</button>
       </div>
 
       <div className="messages-section">
