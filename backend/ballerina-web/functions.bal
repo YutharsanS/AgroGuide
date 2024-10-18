@@ -66,32 +66,32 @@ function generateEmbedding(string text) returns float[]|error {
     return embedding;
 }
 
-function findSimilarAnswers(float[] queryEmbedding, mongodb:Database database, mongodb:Collection dataCollection) returns QAResult[]|error {
+function findSimilarPosts(float[] queryEmbedding, mongodb:Database database, mongodb:Collection dataCollection) returns Post[]|error {
     // Mongo db query
     map<json>[] pipeline = [
         {
             "$vectorSearch": {
-                "index": "index1",
+                "index": "posts_index",
                 "path": "embedding",
                 "queryVector": queryEmbedding,
-                "numCandidates": 3,
-                "limit": 1
+                "numCandidates": 4,
+                "limit": 2
             }
         }
     ];
 
     // The aggregate method return a stream containg results
-    stream<QAResult, error?> resultStream = check dataCollection->aggregate(pipeline);
+    stream<Post, error?> resultStream = check dataCollection->aggregate(pipeline);
 
-    QAResult[] results = [];
+    Post[] results = [];
 
     error? e = resultStream.forEach(function(json doc) {
         do {
-            // Access the 'question' and 'answer' fields from the JSON document
-            string question = check value:ensureType(doc.question, string);
-            string answer = check value:ensureType(doc.answer, string);
-
-            QAResult qaResult = {question: question, answer: answer};
+            string userName = check value:ensureType(doc.userName, string);
+            string answer = check value:ensureType(doc.postMessage, string);
+            string postDate = check value:ensureType(doc.postDate, string);
+            Reply[] replies = check getReplies(doc.replies);
+            Post qaResult = { _id:check doc._id, userName:userName, postMessage:answer, postDate:postDate, replies:replies};
             results.push(qaResult);
         } on fail var err {
             io:println("Error processing document: ", err.message());
@@ -118,8 +118,8 @@ function findCategory(string userInput, mongodb:Database datstringabase, mongodb
                     "query": userInput, // The search term (with potential typos).
                     "path": "category", // The field to search within.
                     "fuzzy": {
-                        "maxEdits": 1, // Allow up to 2 edits (insertions, deletions, or substitutions).
-                        "prefixLength": 3 // The number of initial characters that must match exactly.
+                        "maxEdits": 1, // Allow up to 1 edits (insertions, deletions, or substitutions).
+                        "prefixLength": 2 // The number of initial characters that must match exactly.
                     }
                 }
             }
@@ -174,11 +174,11 @@ function testCategorySearch(string userInput) returns json|error {
 function testVectorSearch(string userInput) returns json|error {
     // Access the database and collection using name
     mongodb:Database qa_database = check mongoDb->getDatabase(connection.database);
-    mongodb:Collection dataCollection = check qa_database->getCollection(connection.qa_collection_name);
+    mongodb:Collection dataCollection = check qa_database->getCollection(connection.posts);
 
     // Test finding similar answers
     float[] queryEmbedding = check generateEmbedding(userInput);
-    QAResult[] similarAnswers = check findSimilarAnswers(queryEmbedding, qa_database, dataCollection);
+    Post[] similarAnswers = check findSimilarPosts(queryEmbedding, qa_database, dataCollection);
 
     // Convert the similarAnswers array to JSON
     json similarAnswersJson = value:toJson(similarAnswers);
@@ -202,8 +202,6 @@ function getPosts(mongodb:Collection postCollection) returns Post[]|error {
             string answer = check value:ensureType(doc.postMessage, string);
             string postDate = check value:ensureType(doc.postDate, string);
             Reply[] replies = check getReplies(doc.replies);
-
-            // Check if 'replies' field exists and is of type json[]
 
             Post result = {_id: check doc._id, userName: userName, postMessage: answer, postDate: postDate, replies: replies};
             io:println("result: ", result);
