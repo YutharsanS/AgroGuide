@@ -120,6 +120,7 @@ service /chatbot on new http:Listener(8080) {
 
     resource function post postMessage(http:Caller caller, http:Request req) returns error? {
         json payload = check req.getJsonPayload();
+        io:println(payload);
         // Generate a UUID
         string uuid1String = uuid:createType1AsString();
 
@@ -155,9 +156,10 @@ service /chatbot on new http:Listener(8080) {
     }
 
     // Resource function to handle POST requests to the /getContent endpoint
-    resource function get getPosts(http:Caller caller, http:Request req) returns error? {
+    resource function post getPosts(http:Caller caller, http:Request req) returns error? {
         json payload = check req.getJsonPayload();
         string message = (check payload.request).toString();
+        io:println("Request " + message);
 
         json result = check testVectorSearch(message);
         json resultJson = result;
