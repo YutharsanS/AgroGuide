@@ -25,6 +25,7 @@ public type Post_i record {|
     string postMessage;
     string postDate;
     Reply[] replies;
+    float[] embedding;
 |};
 
 public type Reply record {|

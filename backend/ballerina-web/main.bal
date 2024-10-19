@@ -132,7 +132,8 @@ service /chatbot on new http:Listener(8080) {
             userName: check payload.userName,
             postMessage: check payload.postMessage,
             postDate: check payload.postDate,
-            replies: []
+            replies: [],
+            embedding: check generateEmbedding((check payload.postMessage).toString())
         };
 
         // Access the database and collection
@@ -154,7 +155,7 @@ service /chatbot on new http:Listener(8080) {
     }
 
     // Resource function to handle POST requests to the /getContent endpoint
-    resource function post getPosts(http:Caller caller, http:Request req) returns error? {
+    resource function get getPosts(http:Caller caller, http:Request req) returns error? {
         json payload = check req.getJsonPayload();
         string message = (check payload.request).toString();
 
