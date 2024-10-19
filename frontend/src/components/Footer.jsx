@@ -29,8 +29,8 @@ function Footer() {
                 <div className="footer-section contact">
                     <h2>Contact Us</h2>
                     <p>Email: tcoders508@gmail.com</p>
-                    <p>Phone: +123 456 7890</p>
-                    <p>Address: 123 Green Road, Farmville, USA</p>
+                    <p>Phone: +94 75 456789</p>
+                    <p>Address: 395/A/2, Nadurana Rd, Eheliyagoda</p>
                 </div>
                 <div className="footer-section social">
                     <h2>Follow Us</h2>
