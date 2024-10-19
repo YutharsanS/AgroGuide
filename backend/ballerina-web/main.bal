@@ -120,6 +120,7 @@ service /chatbot on new http:Listener(8080) {
 
     resource function post postMessage(http:Caller caller, http:Request req) returns error? {
         json payload = check req.getJsonPayload();
+        io:println(payload);
         // Generate a UUID
         string uuid1String = uuid:createType1AsString();
 
@@ -132,7 +133,8 @@ service /chatbot on new http:Listener(8080) {
             userName: check payload.userName,
             postMessage: check payload.postMessage,
             postDate: check payload.postDate,
-            replies: []
+            replies: [],
+            embedding: check generateEmbedding((check payload.postMessage).toString())
         };
 
         // Access the database and collection
@@ -152,5 +154,17 @@ service /chatbot on new http:Listener(8080) {
         // Send the response back to the client
         check caller->respond(response);
     }
-}
 
+    // Resource function to handle POST requests to the /getContent endpoint
+    resource function post getPosts(http:Caller caller, http:Request req) returns error? {
+        json payload = check req.getJsonPayload();
+        string message = (check payload.request).toString();
+        io:println("Request " + message);
+
+        json result = check testVectorSearch(message);
+        json resultJson = result;
+
+        // Send the result back to the client
+        check caller->respond(resultJson);
+    }
+}

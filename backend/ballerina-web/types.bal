@@ -25,6 +25,7 @@ public type Post_i record {|
     string postMessage;
     string postDate;
     Reply[] replies;
+    float[] embedding;
 |};
 
 public type Reply record {|
@@ -54,4 +55,3 @@ type CategoryDocument record {|
     string category;
     string content;
 |};
-
