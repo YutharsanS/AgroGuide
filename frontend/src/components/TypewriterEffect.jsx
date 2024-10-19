@@ -19,7 +19,6 @@ function TypewriterEffect({ text, speed }) {
       }, speed);
       return () => clearTimeout(timeout);
     }
-    return null;
   }, [index, text, speed]);
 
   return <div>{displayedText}</div>;
